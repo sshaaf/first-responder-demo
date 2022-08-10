@@ -18,6 +18,7 @@ package org.cajun.navy.service;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 import java.io.File;
 
@@ -28,13 +29,17 @@ public class DefaultDeployment {
     private WebArchive webArchive;
 
     public DefaultDeployment() {
-        webArchive = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource(
-            new File(WEBAPP_SRC, "WEB-INF/beans.xml"));
+        webArchive = ShrinkWrap.create(WebArchive.class, "test.war")
+                .addAsWebInfResource(new File(WEBAPP_SRC, "WEB-INF/beans.xml"));
     }
 
     public DefaultDeployment withPersistence() {
-        webArchive = webArchive.addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml").addAsWebInfResource(
-            "test-ds.xml", "test-ds.xml");
+        webArchive = webArchive
+                .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
+//                .addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml")
+//                        .importRuntimeAndTestDependencies().resolve().withTransitivity().asFile())
+//                .addAsWebInfResource("test-ds.xml", "test-ds.xml")
+        ;
         return this;
     }
 

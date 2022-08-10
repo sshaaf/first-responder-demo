@@ -19,18 +19,20 @@
             xsi:schemaLocation="http://jboss.org/schema/arquillian
     http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-    <!-- Uncomment to have test archives exported to the file system for inspection -->
-    <!--<engine>
-        <property name="deploymentExportPath">target/</property>
-    </engine>-->
+    <engine>
+        <property name="deploymentExportPath">target/deployments</property>
+    </engine>
 
-    <!-- Example configuration for a managed JBoss EAP instance -->
     <container qualifier="jboss" default="true">
-        <!-- By default, Arquillian will use the JBOSS_HOME environment variable to find the JBoss EAP installation.
-             If you prefer not to define the JBOSS_HOME environment variable, alternatively you can uncomment the
-             following `jbossHome` property and replace EAP_HOME with the path to your JBoss EAP installation. -->
         <configuration>
-            <property name="jbossHome">/home/sysh/java/jboss-eap-7.4</property>
+            <!--            <property name="serverConfig">${jboss.server.config.file.name}</property>-->
+            <property name="javaVmArguments">
+                -Dorg.wildfly.datasources.postgresql.jndi-name=java:/FRDemoDS
+                -Dorg.wildfly.datasources.postgresql.database=frdemo
+                -Dorg.wildfly.datasources.postgresql.user-name=frdemo
+                -Dorg.wildfly.datasources.postgresql.password=frdemo
+            </property>
+            <property name="allowConnectingToRunningServer">true</property>
         </configuration>
     </container>
 </arquillian>

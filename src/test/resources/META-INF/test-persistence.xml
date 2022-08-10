@@ -23,7 +23,6 @@
    <persistence-unit name="primary">
       <jta-data-source>java:/FRDemoDS</jta-data-source>
       <properties>
-         <!-- Properties for Hibernate -->
          <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
          <property name="hibernate.show_sql" value="false"/>
          <property name="hibernate.hbm2ddl.auto" value="update" />

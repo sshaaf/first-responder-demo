@@ -23,13 +23,12 @@
                      interferes with that. Use 'https' for builds that will be released
                      to non-snapshot public maven repos -->
         <maven.repository.protocol>https</maven.repository.protocol>
+        <version.wildfly>26.1.1.Final</version.wildfly>
         <version.wildfly.maven.plugin>2.0.2.Final</version.wildfly.maven.plugin>
         <!-- The full remote maven repo URL; can be overridden via -D for special use cases -->
-        <maven.repository.url>${maven.repository.protocol}://repository.jboss.org/nexus/content/groups/public/
-        </maven.repository.url>
+        <maven.repository.url>${maven.repository.protocol}://repository.jboss.org/nexus/content/groups/public/</maven.repository.url>
         <!-- https://access.redhat.com/maven-repository -->
-        <maven.redhat.repository.url>${maven.repository.protocol}://maven.repository.redhat.com/ga/
-        </maven.redhat.repository.url>
+        <maven.redhat.repository.url>${maven.repository.protocol}://maven.repository.redhat.com/ga/</maven.redhat.repository.url>
 
         <!-- Version of BOMs
         note: a SNAPSHOT version *requires* checkout of BOMs at https://github.com/wildfly/boms and build through "mvn clean install"
@@ -37,6 +36,10 @@
         <version.server.bom>7.4.0.GA</version.server.bom>
         <mapbox.version>4.5.0</mapbox.version>
         <version.checkstyle>8.5</version.checkstyle>
+        <version.testcontainers>1.17.3</version.testcontainers>
+        <frdemo.dbname>frdemo</frdemo.dbname>
+        <frdemo.dbuser>${frdemo.dbname}</frdemo.dbuser>
+        <frdemo.dbpass>${frdemo.dbname}</frdemo.dbpass>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -106,6 +109,7 @@
             <url>${maven.redhat.repository.url}</url>
         </pluginRepository>
     </pluginRepositories>
+
     <dependencies>
 
         <!-- Import the CDI API, we use provided scope as the API is included in JBoss EAP -->
@@ -202,8 +206,25 @@
             <artifactId>httpclient</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.23.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${version.testcontainers}</version>
+            <scope>test</scope>
+        </dependency>
 
-
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.4.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -289,6 +310,74 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.codehaus.gmaven</groupId>
+                        <artifactId>groovy-maven-plugin</artifactId>
+                        <version>2.1.1</version>
+                        <executions>
+                            <execution>
+                                <id>startdb</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <source>
+                                        db = new org.testcontainers.containers.PostgreSQLContainer("postgres:latest")
+                                                .withDatabaseName("${frdemo.dbname}")
+                                                .withUsername("${frdemo.dbuser}")
+                                                .withPassword("${frdemo.dbpass}")
+                                        db.start()
+                                        project.properties.setProperty('jdbc.url', db.getJdbcUrl())
+                                        print(db.getJdbcUrl())
+                                    </source>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.testcontainers</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>${version.testcontainers}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <version>3.0.2.Final</version>
+                        <executions>
+                            <execution>
+                                <id>provision-server</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>provision</goal>
+                                </goals>
+                                <configuration>
+                                    <recordProvisioningState>true</recordProvisioningState>
+                                    <feature-packs>
+<!--
+                                        <feature-pack>
+                                            <location>org.wildfly:wildfly-galleon-pack:${version.wildfly}</location>
+                                        </feature-pack>
+-->
+                                        <feature-pack>
+                                            <location>org.wildfly:wildfly-datasources-preview-galleon-pack:2.2.3.Final</location>
+                                        </feature-pack>
+                                    </feature-packs>
+                                    <layers>
+                                        <layer>core-server</layer>
+                                        <layer>jaxrs-server</layer>
+                                        <layer>microprofile-reactive-messaging</layer>
+                                        <layer>postgresql-datasource</layer>
+                                    </layers>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <provisioning-dir>${project.basedir}/target/wildfly-${version.wildfly}</provisioning-dir>
+                        </configuration>
+                    </plugin>
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>${version.failsafe.plugin}</version>
@@ -298,6 +387,15 @@
                                     <goal>integration-test</goal>
                                     <goal>verify</goal>
                                 </goals>
+                                <configuration>
+                                    <systemPropertyVariables>
+                                        <arquillian.launch>jboss</arquillian.launch>
+                                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                                        <jboss.home>${project.basedir}/target/wildfly-${version.wildfly}</jboss.home>
+                                        <org.wildfly.datasources.postgresql.connection-url>${jdbc.url}</org.wildfly.datasources.postgresql.connection-url>
+                                    </systemPropertyVariables>
+                                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

@@ -24,23 +24,28 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.io.FileNotFoundException;
 
+import static org.assertj.core.api.Assertions.*;
+
 @RunWith(Arquillian.class)
 public class IncidentDaoIT {
 
     @Deployment
-    public static WebArchive deployment() throws IllegalArgumentException, FileNotFoundException {
-        return new DefaultDeployment().withPersistence().withImportedData().getArchive()
-                .addClasses(Resources.class, IncidentDao.class, IncidentDaoImpl.class);
+    public static WebArchive deployment() throws IllegalArgumentException {
+        return new DefaultDeployment()
+                .withPersistence()
+                .withImportedData()
+                .getArchive()
+//                .addClasses(Resources.class, IncidentDao.class, IncidentDaoImpl.class)
+                .addPackages(true,"org.cajun.navy")
+                ;
     }
-
-    @Inject
-    private EntityManager em;
 
     @Inject
     private IncidentDao incidentDao;
@@ -49,5 +54,10 @@ public class IncidentDaoIT {
     @Before
     public void setUp() throws Exception {
 
+    }
+
+    @Test
+    public void sanity() {
+        assert incidentDao != null;
     }
 }
