@@ -218,13 +218,6 @@
             <version>${version.testcontainers}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.4.0</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -328,7 +321,6 @@
                                                 .withPassword("${frdemo.dbpass}")
                                         db.start()
                                         project.properties.setProperty('jdbc.url', db.getJdbcUrl())
-                                        print(db.getJdbcUrl())
                                     </source>
                                 </configuration>
                             </execution>
@@ -355,11 +347,6 @@
                                 <configuration>
                                     <recordProvisioningState>true</recordProvisioningState>
                                     <feature-packs>
-<!--
-                                        <feature-pack>
-                                            <location>org.wildfly:wildfly-galleon-pack:${version.wildfly}</location>
-                                        </feature-pack>
--->
                                         <feature-pack>
                                             <location>org.wildfly:wildfly-datasources-preview-galleon-pack:2.2.3.Final</location>
                                         </feature-pack>
