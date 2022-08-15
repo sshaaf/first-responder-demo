@@ -25,6 +25,7 @@ public class IncidentResource {
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response createIncident(@Valid Incident incident) {
         Incident item = incidentDao.create(incident);
         return Response.status(Response.Status.CREATED).entity(item).build();
