@@ -30,6 +30,8 @@
         <!-- https://access.redhat.com/maven-repository -->
         <maven.redhat.repository.url>${maven.repository.protocol}://maven.repository.redhat.com/ga/</maven.redhat.repository.url>
 
+        <maven.repo.url>${maven.repository.protocol}://repo1.maven.org/maven2/</maven.repo.url>
+
         <!-- Version of BOMs
         note: a SNAPSHOT version *requires* checkout of BOMs at https://github.com/wildfly/boms and build through "mvn clean install"
         -->
@@ -89,6 +91,20 @@
             <id>jboss-enterprise-maven-repository</id>
             <name>JBoss Enterprise Maven Repository</name>
             <url>${maven.redhat.repository.url}</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+            <id>mvn-repository-group</id>
+            <name>public maven repo</name>
+            <url>${maven.repo.url}</url>
             <layout>default</layout>
         </repository>
     </repositories>
@@ -193,9 +209,7 @@
             <groupId>com.mapbox.mapboxsdk</groupId>
             <artifactId>mapbox-sdk-services</artifactId>
             <version>${mapbox.version}</version>
-            <scope>provided</scope>
         </dependency>
-
 
         <!-- Import the Reactive Messaging API, we use provided scope as the API is included in WildFly -->
         <dependency>

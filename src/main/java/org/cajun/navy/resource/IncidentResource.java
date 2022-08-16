@@ -1,7 +1,6 @@
 package org.cajun.navy.resource;
 
 import org.cajun.navy.model.incident.Incident;
-import org.cajun.navy.model.incident.IncidentDao;
 import org.cajun.navy.service.IncidentService;
 
 import javax.inject.Inject;

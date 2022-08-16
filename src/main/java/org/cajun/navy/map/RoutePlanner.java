@@ -10,22 +10,23 @@ import org.cajun.navy.model.mission.MissionStep;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import retrofit2.Response;
 
-import javax.ejb.ActivationConfigProperty;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.logging.Logger;
 
-//@ApplicationScoped
+@ApplicationScoped
 public class RoutePlanner {
 
     private static Logger logger = Logger.getLogger(RoutePlanner.class.getName());
 
     // TODO: Get config property
-    //@ConfigProperty(name = "mapbox.token")
-    private static String MAPBOX_ACCESS_TOKEN;
+    @Inject
+    @ConfigProperty(name = "mapbox.token")
+    private String MAPBOX_ACCESS_TOKEN;
 
     public List<MissionStep> getDirections(Location origin, Location destination, Location waypoint) {
 
@@ -71,7 +72,7 @@ public class RoutePlanner {
         }
     }
 
-    private static Response<DirectionsResponse> callMapBoxAPI(String profile, Location origin, Location destination, Location waypoint) throws IOException {
+    private Response<DirectionsResponse> callMapBoxAPI(String profile, Location origin, Location destination, Location waypoint) throws IOException {
         MapboxDirections request =  MapboxDirections.builder()
                 .accessToken(MAPBOX_ACCESS_TOKEN)
                 .origin(Point.fromLngLat(origin.getLongitude().doubleValue(), origin.getLatitude().doubleValue()))

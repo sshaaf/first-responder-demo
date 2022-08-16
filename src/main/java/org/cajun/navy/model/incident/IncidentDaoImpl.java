@@ -3,7 +3,6 @@ package org.cajun.navy.model.incident;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;

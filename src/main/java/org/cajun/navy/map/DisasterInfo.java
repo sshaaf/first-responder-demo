@@ -23,7 +23,10 @@ public class DisasterInfo {
     }
 
     public static Shelter getRandomShelter(){
-        return shelters.get(Math.floor(Math.random() * shelters.size()) + 1);
+        int min = 1;
+        int max = shelters.size();
+        String key = String.valueOf((int) (Math.random() * (max - min)) + min);
+        return shelters.get(key);
     }
 
 }

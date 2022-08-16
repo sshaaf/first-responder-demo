@@ -1,6 +1,5 @@
 package org.cajun.navy.model.responder;
 
-import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
