@@ -1,13 +1,14 @@
 package org.cajun.navy.model.mission;
 
-import org.cajun.navy.map.RoutePlanner;
-
 import javax.ejb.Stateful;
+import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-@Stateful
+@RequestScoped
 public class MissionDaoImpl implements MissionDao{
 
     @Inject
@@ -15,9 +16,6 @@ public class MissionDaoImpl implements MissionDao{
 
     @Override
     public Mission create(Mission mission) {
-        mission.setStatus(MissionStatus.CREATED.toString());
-        List<MissionStep> steps = RoutePlanner.getDirections(mission.responderLocation(), mission.destinationLocation(), mission.incidentLocation());
-        mission.setSteps(steps);
         entityManager.persist(mission);
         return mission;
     }

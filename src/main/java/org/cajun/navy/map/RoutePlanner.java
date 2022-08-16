@@ -7,23 +7,27 @@ import com.mapbox.api.directions.v5.models.RouteLeg;
 import com.mapbox.geojson.Point;
 import org.cajun.navy.model.mission.Location;
 import org.cajun.navy.model.mission.MissionStep;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import retrofit2.Response;
 
 import javax.ejb.ActivationConfigProperty;
+import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.logging.Logger;
 
+//@ApplicationScoped
 public class RoutePlanner {
 
     private static Logger logger = Logger.getLogger(RoutePlanner.class.getName());
 
     // TODO: Get config property
+    //@ConfigProperty(name = "mapbox.token")
     private static String MAPBOX_ACCESS_TOKEN;
 
-    public static List<MissionStep> getDirections(Location origin, Location destination, Location waypoint) {
+    public List<MissionStep> getDirections(Location origin, Location destination, Location waypoint) {
 
         try {
             List<MissionStep> missionSteps = new ArrayList<>();

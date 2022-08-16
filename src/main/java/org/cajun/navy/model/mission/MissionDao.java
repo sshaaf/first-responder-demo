@@ -1,9 +1,8 @@
 package org.cajun.navy.model.mission;
 
-import javax.ejb.Local;
 import java.util.List;
 
-@Local
+
 public interface MissionDao {
 
     Mission create(Mission mission);

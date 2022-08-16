@@ -1,4 +1,4 @@
-package org.cajun.navy.service;
+package org.cajun.navy.resource;
 
 import org.cajun.navy.model.mission.Mission;
 import org.cajun.navy.model.mission.MissionDao;

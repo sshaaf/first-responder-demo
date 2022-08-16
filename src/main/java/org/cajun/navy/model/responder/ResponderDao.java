@@ -1,9 +1,7 @@
 package org.cajun.navy.model.responder;
 
-import javax.ejb.Local;
 import java.util.List;
 
-@Local
 public interface ResponderDao {
     Responder create(Responder responder);
 

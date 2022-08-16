@@ -1,7 +1,8 @@
-package org.cajun.navy.service;
+package org.cajun.navy.resource;
 
 import org.cajun.navy.model.responder.Responder;
 import org.cajun.navy.model.responder.ResponderDao;
+import org.cajun.navy.service.ResponderService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -16,20 +17,20 @@ import java.util.Optional;
 public class ResponderResource {
 
         @Inject
-        ResponderDao responderDao;
+        ResponderService service;
 
         @GET
         @Path("stats")
         @Produces(MediaType.APPLICATION_JSON)
         public Response stats() {
-                return Response.ok(responderDao.activeRespondersCount()).build();
+                return Response.ok(service.activeRespondersCount()).build();
         }
 
         @GET
         @Path("{id}")
         @Produces(MediaType.APPLICATION_JSON)
         public Response responder(@PathParam("id") long id) {
-                Responder responder = responderDao.findById(id);
+                Responder responder = service.findById(id);
                 if (responder == null) {
                         return Response.status(Response.Status.NOT_FOUND).build();
                 } else {
@@ -41,7 +42,7 @@ public class ResponderResource {
         @Path("byname/{name}")
         @Produces(MediaType.APPLICATION_JSON)
         public Response responderByName(@PathParam("name") String name) {
-                Responder responder = responderDao.findByName(name);
+                Responder responder = service.findByName(name);
                 if (responder == null) {
                         return Response.status(Response.Status.NOT_FOUND).build();
                 } else {
@@ -57,12 +58,12 @@ public class ResponderResource {
                 List<Responder> responders;
                 if (limit.isPresent()) {
                         if (offset.isPresent()) {
-                                responders = responderDao.availableResponders(limit.get(), offset.get());
+                                responders = service.availableResponders(limit.get(), offset.get());
                         } else {
-                                responders = responderDao.availableResponders(limit.get(),0);
+                                responders = service.availableResponders(limit.get(),0);
                         }
                 } else {
-                        responders = responderDao.availableResponders();
+                        responders = service.availableResponders();
                 }
                 return Response.ok(responders).build();
         }
@@ -73,12 +74,12 @@ public class ResponderResource {
                 List<Responder> responders;
                 if (limit.isPresent()) {
                         if (offset.isPresent()) {
-                                responders = responderDao.allResponders(limit.get(), offset.get());
+                                responders = service.allResponders(limit.get(), offset.get());
                         } else {
-                                responders = responderDao.allResponders(limit.get(),0);
+                                responders = service.allResponders(limit.get(),0);
                         }
                 } else {
-                        responders = responderDao.allResponders();
+                        responders = service.allResponders();
                 }
                 return Response.ok(responders).build();
         }
@@ -90,12 +91,12 @@ public class ResponderResource {
                 List<Responder> responders;
                 if (limit.isPresent()) {
                         if (offset.isPresent()) {
-                                responders = responderDao.personResponders(limit.get(), offset.get());
+                                responders = service.personResponders(limit.get(), offset.get());
                         } else {
-                                responders = responderDao.personResponders(limit.get(),0);
+                                responders = service.personResponders(limit.get(),0);
                         }
                 } else {
-                        responders = responderDao.personResponders();
+                        responders = service.personResponders();
                 }
                 return Response.ok(responders).build();
         }
@@ -104,7 +105,7 @@ public class ResponderResource {
         @Path("/responder")
         @Consumes(MediaType.APPLICATION_JSON)
         public Response createResponder(Responder responder) throws URISyntaxException {
-                Responder created = responderDao.create(responder);
+                Responder created = service.create(responder);
                 return Response.created(new URI("/responder/" + created.getId())).build();
         }
 
@@ -112,14 +113,14 @@ public class ResponderResource {
         @Path("/responder")
         @Consumes(MediaType.APPLICATION_JSON)
         public Response updateResponder(Responder responder) {
-                responderDao.update(responder);
+                service.update(responder);
                 return Response.status(Response.Status.NO_CONTENT).build();
         }
 
         @POST
         @Path("reset")
         public Response reset() {
-                responderDao.reset();
+                service.reset();
                 return Response.ok().build();
         }
 
@@ -128,8 +129,8 @@ public class ResponderResource {
         public Response clear(@QueryParam("delete") Optional<String> delete) {
 
                 if (delete.orElse("").equals("all")) {
-                        responderDao.deleteAll();
-                } else responderDao.clear();
+                        service.deleteAll();
+                } else service.clear();
                 return Response.ok().build();
         }
 }

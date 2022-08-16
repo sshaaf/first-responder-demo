@@ -1,7 +1,8 @@
-package org.cajun.navy.service;
+package org.cajun.navy.resource;
 
 import org.cajun.navy.model.incident.Incident;
 import org.cajun.navy.model.incident.IncidentDao;
+import org.cajun.navy.service.IncidentService;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -13,13 +14,13 @@ import javax.ws.rs.core.Response;
 public class IncidentResource {
 
     @Inject
-    IncidentDao incidentDao;
+    IncidentService service;
 
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response incidents() {
-        return Response.status(Response.Status.ACCEPTED).entity(incidentDao.findAll()).build();
+        return Response.status(Response.Status.ACCEPTED).entity(service.findAll()).build();
     }
 
     @POST
@@ -27,22 +28,21 @@ public class IncidentResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createIncident(@Valid Incident incident) {
-        Incident item = incidentDao.create(incident);
-        return Response.status(Response.Status.CREATED).entity(item).build();
+        return Response.status(Response.Status.CREATED).entity(service.createIncident(incident)).build();
     }
 
     @GET
     @Path("/{status}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response incidentsByStatus(@PathParam("status") String status) {
-        return Response.ok(incidentDao.findByStatus(status)).build();
+        return Response.ok(service.findByStatus(status)).build();
     }
 
     @GET
     @Path("/incident/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response incidentById(@PathParam("id") String incidentId) {
-        Incident item = incidentDao.findByIncidentId(incidentId);
+        Incident item = service.findByIncidentId(incidentId);
         if(item == null){
             return Response.status(Response.Status.NO_CONTENT).build();
         }
@@ -55,7 +55,7 @@ public class IncidentResource {
     @Path("/byname/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response incidentsByName(@PathParam("name") String name) {
-        return Response.ok(incidentDao.findByName(name)).build();
+        return Response.ok(service.findByName(name)).build();
     }
 
     @POST
@@ -63,5 +63,6 @@ public class IncidentResource {
     public Response reset() {
         return Response.ok(Response.Status.ACCEPTED).build();
     }
+
 
 }

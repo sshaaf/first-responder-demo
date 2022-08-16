@@ -34,6 +34,7 @@
         note: a SNAPSHOT version *requires* checkout of BOMs at https://github.com/wildfly/boms and build through "mvn clean install"
         -->
         <version.server.bom>7.4.0.GA</version.server.bom>
+        <version.server.xp>4.0.0.GA</version.server.xp>
         <mapbox.version>4.5.0</mapbox.version>
         <version.checkstyle>8.5</version.checkstyle>
         <version.testcontainers>1.17.3</version.testcontainers>
@@ -48,6 +49,13 @@
                 <groupId>org.jboss.bom</groupId>
                 <artifactId>jboss-eap-jakartaee8-with-tools</artifactId>
                 <version>${version.server.bom}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-eap-xp-microprofile</artifactId>
+                <version>${version.server.xp}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -159,11 +167,71 @@
             <scope>provided</scope>
         </dependency>
 
+
+        <!-- Json API -->
+        <dependency>
+            <groupId>jakarta.json.bind</groupId>
+            <artifactId>jakarta.json.bind-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the resteasy-jaxrs API, we use provided scope as the API is included in JBoss EAP XP -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Mapbox API -->
         <dependency>
             <groupId>com.mapbox.mapboxsdk</groupId>
             <artifactId>mapbox-sdk-services</artifactId>
             <version>${mapbox.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <!-- Import the Reactive Messaging API, we use provided scope as the API is included in WildFly -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.reactive.messaging</groupId>
+            <artifactId>microprofile-reactive-messaging-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Import the Reactive Streams Operators API, we use provided scope as the API is included in WildFly -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
+            <artifactId>microprofile-reactive-streams-operators-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Import the Reactive Streams API, we use provided scope as the API is included in WildFly -->
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Import the Kafka Client API, we use provided scope as the API is included in WildFly -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Import the SmallRye Kafka API, we use provided scope as the API is included in WildFly -->
+        <dependency>
+            <groupId>io.smallrye.reactive</groupId>
+            <artifactId>smallrye-reactive-messaging-kafka-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the MicroProfile Config API -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -289,10 +357,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.10.1</version>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                </configuration>
             </plugin>
         </plugins>
     </build>
