@@ -3,6 +3,7 @@ package org.cajun.navy.resource;
 import org.cajun.navy.model.incident.Incident;
 import org.cajun.navy.service.IncidentService;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -10,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/incidents")
+@RequestScoped
 public class IncidentResource {
 
     @Inject

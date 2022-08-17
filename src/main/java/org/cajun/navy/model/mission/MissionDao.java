@@ -1,7 +1,7 @@
 package org.cajun.navy.model.mission;
 
-import java.util.List;
 
+import java.util.List;
 
 public interface MissionDao {
 

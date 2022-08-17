@@ -4,6 +4,7 @@ import org.cajun.navy.model.responder.Responder;
 import org.cajun.navy.model.responder.ResponderDao;
 import org.cajun.navy.service.ResponderService;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Path("/responders/")
+@RequestScoped
 public class ResponderResource {
 
         @Inject

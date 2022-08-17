@@ -1,6 +1,5 @@
 package org.cajun.navy.model.responder;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
@@ -8,7 +7,6 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-@RequestScoped
 public class ResponderDaoImpl implements ResponderDao {
 
     @Inject

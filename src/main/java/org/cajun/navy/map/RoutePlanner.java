@@ -11,6 +11,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import retrofit2.Response;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -29,7 +30,6 @@ public class RoutePlanner {
     private String MAPBOX_ACCESS_TOKEN;
 
     public List<MissionStep> getDirections(Location origin, Location destination, Location waypoint) {
-
         try {
             List<MissionStep> missionSteps = new ArrayList<>();
             Response<DirectionsResponse> response = callMapBoxAPI(DirectionsCriteria.PROFILE_DRIVING, origin, destination, waypoint);

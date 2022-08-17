@@ -19,7 +19,7 @@ import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
-import java.util.concurrent.CompletionStage;
+
 
 @ApplicationScoped
 public class MissionService {
@@ -27,8 +27,11 @@ public class MissionService {
     @Inject
     MissionDao missionDao;
 
-//    @Inject
-//    ResponderService responderService;
+    @Inject
+    ResponderService responderService;
+
+    @Inject
+    ResponderDao responderDao;
 
     @Inject
     RoutePlanner routePlanner;
@@ -38,6 +41,7 @@ public class MissionService {
     }
 
     public List<Mission> findAll(){
+        responderService.availableResponders();
         return missionDao.findAll();
     }
 
@@ -75,58 +79,39 @@ public class MissionService {
     @Incoming("create-mission")
     public void doCreateMission(Incident incident){
         System.out.println("creating missions!!");
-        Shelter shelter = DisasterInfo.getRandomShelter();
-        //RoutePlanner routePlanner = new RoutePlanner();
-        routePlanner.getDirections(DisasterInfo.getRandomShelter().shelterLocation(), DisasterInfo.getRandomShelter().shelterLocation(), DisasterInfo.getRandomShelter().shelterLocation());
-        //Responder responder = responderService.availableResponders().get(0);
 
-        //Mission mission = new Mission();
-        //mission.setStatus(MissionStatus.CREATED.toString());
+        Mission mission = new Mission();
+        mission.setStatus(MissionStatus.CREATED.toString());
 
         // Set incident id and location
-        //mission.setIncidentId(incident.getIncidentId());
-        //mission.setIncidentLatitude(incident.getLatitude());
-        //mission.setIncidentLongtitude(incident.getLongitude());
+        mission.setIncidentId(incident.getIncidentId());
+        mission.setIncidentLatitude(incident.getLatitude());
+        mission.setIncidentLongtitude(incident.getLongitude());
 
         // Set responders id and current location
-        // TODO: Fix this
-        //mission.setResponderId(String.valueOf(responder.getId()));
-        //mission.setResponderStartLatitude(responder.getLatitude());
-        //mission.setResponderStartLongitude(responder.getLatitude());
-        //missionDao.create(mission);
-    }
+        Responder responder = responderService.getFirstAvailableResponder();
+        mission.setResponderId(String.valueOf(responder.getId()));
+        mission.setResponderStartLatitude(responder.getLatitude());
+        mission.setResponderStartLongitude(responder.getLongitude());
 
-
-//    public Mission doCreateMission(Incident incident){
-//
-//
-//
-//        Mission mission = new Mission();
-//        mission.setStatus(MissionStatus.CREATED.toString());
-//
-//        // Set incident id and location
-//        mission.setIncidentId(incident.getIncidentId());
-//        mission.setIncidentLatitude(incident.getLatitude());
-//        mission.setIncidentLongtitude(incident.getLongitude());
-//
-//        // Set responders id and current location
-//        // TODO: Fix this
-//        mission.setResponderId(String.valueOf(responder.getId()));
-//        mission.setResponderStartLatitude(responder.getLatitude());
-//        mission.setResponderStartLongitude(responder.getLatitude());
-//
-//        //mission.setSteps(getAllSteps(mission));
-//
-//        return mission;
-//
-//    }
-
-/*    public List<MissionStep> getAllSteps(Mission mission){
+        // Get directions for the mission
         Shelter shelter = DisasterInfo.getRandomShelter();
+        mission.setSteps(getAllSteps(mission.responderLocation(), shelter.shelterLocation(), mission.incidentLocation()));
+
+        missionDao.create(mission);
+    }
+
+
+    public List<MissionStep> getAllSteps(Location origin, Location destination, Location wayPoint){
+
+        System.out.println("origin: "+origin);
+        System.out.println("destination: "+destination);
+        System.out.println("waypoint: "+wayPoint);
+
         // get directions
-        // origin = respondersLocation, waypoint = incidentsLocation, destination = shelterLocation
-        return  routePlanner.getDirections(mission.responderLocation(), shelter.shelterLocation(), mission.incidentLocation());
+        // origin = respondersLocation, destination = shelterLocation , waypoint
+        return  routePlanner.getDirections(origin, destination, wayPoint);
 
     }
-*/
+
 }

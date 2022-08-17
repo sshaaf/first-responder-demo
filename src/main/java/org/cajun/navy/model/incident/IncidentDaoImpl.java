@@ -3,12 +3,11 @@ package org.cajun.navy.model.incident;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-@RequestScoped
+
 public class IncidentDaoImpl implements IncidentDao {
 
 

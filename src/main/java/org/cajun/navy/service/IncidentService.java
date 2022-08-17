@@ -8,11 +8,13 @@ import org.cajun.navy.util.JsonMapper;
 import org.eclipse.microprofile.reactive.messaging.*;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.List;
 
 
-@ApplicationScoped
+@RequestScoped
 public class IncidentService {
 
     @Inject
