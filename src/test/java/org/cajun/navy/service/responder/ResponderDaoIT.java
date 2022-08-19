@@ -48,6 +48,6 @@ public class ResponderDaoIT extends AbstractTestBase {
 
     @Test
     public void updateResponder() {
-        
+
     }
 }

@@ -44,7 +44,7 @@ public abstract class AbstractTestBase {
     public static Archive getDeployment() throws IOException {
         if (webArchive == null) {
             PomEquippedResolveStage pom = Maven.resolver().loadPomFromFile("pom.xml")
-                    .importDependencies(ScopeType.TEST, ScopeType.RUNTIME);
+                    .importDependencies(ScopeType.RUNTIME);
             String config = Files.readString(Path.of("src/main/resources/META-INF/microprofile-config.properties"));
             config = config.replaceAll("localhost:9092", "" + System.getProperty("kafka.server"));
 
@@ -52,7 +52,6 @@ public abstract class AbstractTestBase {
                     .addAsWebInfResource(new File(WEBAPP_SRC, "WEB-INF/beans.xml"))
                     .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
                     .addAsResource(new StringAsset(config), "META-INF/microprofile-config.properties")
-                    .addAsLibraries(pom.resolve("org.assertj:assertj-core").withTransitivity().asList(JavaArchive.class))
                     .addAsLibraries(pom.resolve("com.mapbox.mapboxsdk:mapbox-sdk-services").withTransitivity().asList(JavaArchive.class))
                     .addAsResource("import.sql")
                     .addPackages(true, "org.cajun.navy")

@@ -20,23 +20,15 @@ import javax.inject.Inject;
 
 import org.cajun.navy.model.incident.IncidentDao;
 import org.cajun.navy.service.AbstractTestBase;
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 public class IncidentDaoIT extends AbstractTestBase {
     @Inject
     private IncidentDao incidentDao;
 
-
-    @Before
-    public void setUp() throws Exception {
-
-    }
-
     @Test
     public void sanity() {
-        assert incidentDao != null;
+        Assert.assertNotNull(incidentDao);
     }
 }
