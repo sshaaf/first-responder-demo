@@ -18,10 +18,6 @@ public class IncidentDaoImpl implements IncidentDao {
     @Override
     @Transactional
     public Incident create(Incident incident) {
-        return doCreate(incident);
-    }
-
-    private Incident doCreate(Incident incident){
         String incidentId = UUID.randomUUID().toString();
         long reportedTimestamp = System.currentTimeMillis();
 

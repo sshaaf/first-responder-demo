@@ -16,19 +16,54 @@
  */
 package org.cajun.navy.service.incident;
 
+import java.math.BigDecimal;
+import java.util.UUID;
 import javax.inject.Inject;
 
+import org.cajun.navy.model.incident.Incident;
 import org.cajun.navy.model.incident.IncidentDao;
+import org.cajun.navy.model.incident.IncidentDaoImpl;
+import org.cajun.navy.model.incident.IncidentStatus;
 import org.cajun.navy.service.AbstractTestBase;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class IncidentDaoIT extends AbstractTestBase {
     @Inject
-    private IncidentDao incidentDao;
+    private IncidentDao dao;
 
     @Test
     public void sanity() {
-        Assert.assertNotNull(incidentDao);
+        Assert.assertNotNull(dao);
+    }
+
+    @Test
+    public void testReadOnlyQueries() {
+        dao.findAll();
+        dao.findByName("Test");
+        dao.findByIncidentId(UUID.randomUUID().toString());
+        dao.findByStatus(IncidentStatus.REPORTED.name());
+    }
+
+    @Test
+    public void createIncident() {
+        Incident incident = new Incident();
+        incident.setLatitude(BigDecimal.valueOf(34.214745));
+        incident.setLongitude(BigDecimal.valueOf(-77.9837161));
+        incident.setMedicalNeeded(true);
+        incident.setNumberOfPeople(3);
+        incident.setVictimName("John Doe");
+        incident.setVictimPhoneNumber("(123) 456-7890");
+
+        Incident created = dao.create(incident);
+        Assert.assertNotNull(created.getId());
+        Assert.assertNotNull(created.getIncidentId());
+        Assert.assertNotNull(created.getReportedTime());
+        Assert.assertNotNull(created.getStatus());
+    }
+
+    @Test
+    public void deleteAll() {
+        dao.deleteAll();
     }
 }
