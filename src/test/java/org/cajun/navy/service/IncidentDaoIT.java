@@ -16,30 +16,16 @@
  */
 package org.cajun.navy.service;
 
+import javax.inject.Inject;
+
 import org.cajun.navy.model.incident.IncidentDao;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
-
 @RunWith(Arquillian.class)
-public class IncidentDaoIT {
-
-    @Deployment
-    public static WebArchive deployment() throws IllegalArgumentException {
-        return new DefaultDeployment()
-                .withPersistence()
-                .withImportedData()
-                .getArchive()
-//                .addClasses(Resources.class, IncidentDao.class, IncidentDaoImpl.class)
-                .addPackages(true,"org.cajun.navy")
-                ;
-    }
-
+public class IncidentDaoIT extends AbstractTestBase {
     @Inject
     private IncidentDao incidentDao;
 

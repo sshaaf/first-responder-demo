@@ -16,15 +16,15 @@
         <version>37</version>
     </parent>
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <!-- Protocol to use for communication with remote maven repositories.
                      You can set to 'http' if you are using a maven proxy and 'https'
                      interferes with that. Use 'https' for builds that will be released
                      to non-snapshot public maven repos -->
         <maven.repository.protocol>https</maven.repository.protocol>
         <version.wildfly>26.1.1.Final</version.wildfly>
-        <version.wildfly.maven.plugin>2.0.2.Final</version.wildfly.maven.plugin>
+        <version.wildfly.maven.plugin>3.0.2.Final</version.wildfly.maven.plugin>
         <!-- The full remote maven repo URL; can be overridden via -D for special use cases -->
         <maven.repository.url>${maven.repository.protocol}://repository.jboss.org/nexus/content/groups/public/</maven.repository.url>
         <!-- https://access.redhat.com/maven-repository -->
@@ -308,6 +308,12 @@
             <version>${version.testcontainers}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>kafka</artifactId>
+            <version>${version.testcontainers}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -380,6 +386,7 @@
                  This profile will start a new JBoss EAP instance, and execute the test, shutting it down when done.
                  Run with: mvn clean verify -Parq-managed -->
             <id>arq-managed</id>
+
             <dependencies>
                 <dependency>
                     <groupId>org.wildfly.arquillian</groupId>
@@ -388,6 +395,7 @@
                 </dependency>
             </dependencies>
             <build>
+                <defaultGoal>verify</defaultGoal>
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.gmaven</groupId>
@@ -395,7 +403,32 @@
                         <version>2.1.1</version>
                         <executions>
                             <execution>
-                                <id>startdb</id>
+                                <id>kafka</id>
+<!--                                <phase>pre-integration-test</phase>-->
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <source>
+                                        import org.apache.kafka.clients.admin.AdminClient
+
+                                    def image = org.testcontainers.utility.DockerImageName.parse("confluentinc/cp-kafka")
+                                            .withTag("7.2.1")
+                                    def kafka = new org.testcontainers.containers.KafkaContainer(image)
+//                                            .withExposedPorts(49152)
+//                                            .withEnv("KAFKA_LISTENERS", "PLAINTEXT://0.0.0.0:49152")
+                                    kafka.start()
+                                    project.properties.setProperty('mp.messaging.connector.smallrye-kafka.bootstrap.servers',
+                                            kafka.bootstrapServers)
+                                    def props = new Properties()
+                                    props.put("bootstrap.servers", kafka.bootstrapServers)
+                                    AdminClient adminClient = AdminClient.create(props)
+                                    adminClient.createTopics(ImmutableList.of("IncidentReportedEvent"))
+                                    </source>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>postgres</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>execute</goal>
@@ -411,6 +444,7 @@
                                     </source>
                                 </configuration>
                             </execution>
+
                         </executions>
                         <dependencies>
                             <dependency>
@@ -418,12 +452,21 @@
                                 <artifactId>postgresql</artifactId>
                                 <version>${version.testcontainers}</version>
                             </dependency>
+                            <dependency>
+                                <groupId>org.testcontainers</groupId>
+                                <artifactId>kafka</artifactId>
+                                <version>${version.testcontainers}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.apache.kafka</groupId>
+                                <artifactId>kafka-clients</artifactId>
+                                <version>3.0.0</version>
+                            </dependency>
                         </dependencies>
                     </plugin>
                     <plugin>
                         <groupId>org.wildfly.plugins</groupId>
                         <artifactId>wildfly-maven-plugin</artifactId>
-                        <version>3.0.2.Final</version>
                         <executions>
                             <execution>
                                 <id>provision-server</id>
@@ -442,6 +485,7 @@
                                         <layer>core-server</layer>
                                         <layer>jaxrs-server</layer>
                                         <layer>microprofile-reactive-messaging</layer>
+                                        <layer>microprofile-reactive-messaging-kafka</layer>
                                         <layer>postgresql-datasource</layer>
                                     </layers>
                                 </configuration>
