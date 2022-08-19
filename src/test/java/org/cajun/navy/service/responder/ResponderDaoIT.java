@@ -13,6 +13,22 @@ public class ResponderDaoIT extends AbstractTestBase {
     @Inject
     private ResponderDao dao;
 
+    /**
+     * Just a simple test to make sure the hard-codes named queries are syntactically correct
+     */
+    @Test
+    public void testReadOnlyQueries() {
+        dao.allResponders();
+        dao.findById(1);
+        dao.findByName("Test");
+        dao.availableResponders();
+        dao.availableResponders(1,1);
+        dao.personResponders();
+        dao.nonPersonResponders();
+        dao.enrolledRespondersCount();
+        dao.activeRespondersCount();
+    }
+
     @Test
     public void createResponder() {
         Responder responder = new Responder();
@@ -30,19 +46,8 @@ public class ResponderDaoIT extends AbstractTestBase {
         Assert.assertEquals(responder.getName(), created.getName());
     }
 
-    /**
-     * Just a simple test to make sure the hard-codes named queries are syntactically correct
-     */
     @Test
-    public void testReadOnlyQueries() {
-        dao.allResponders();
-        dao.findById(1);
-        dao.findByName("Test");
-        dao.availableResponders();
-        dao.availableResponders(1,1);
-        dao.personResponders();
-        dao.nonPersonResponders();
-        dao.enrolledRespondersCount();
-        dao.activeRespondersCount();
+    public void updateResponder() {
+        
     }
 }
