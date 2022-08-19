@@ -43,13 +43,11 @@ public abstract class AbstractTestBase {
     @Deployment
     public static Archive getDeployment() throws IOException {
         if (webArchive == null) {
-            System.out.println("***** Resolving deps");
             PomEquippedResolveStage pom = Maven.resolver().loadPomFromFile("pom.xml")
                     .importDependencies(ScopeType.TEST, ScopeType.RUNTIME);
             String config = Files.readString(Path.of("src/main/resources/META-INF/microprofile-config.properties"));
             config = config.replaceAll("localhost:9092", "" + System.getProperty("kafka.server"));
 
-            System.out.println("***** Creating archive");
             webArchive = ShrinkWrap.create(WebArchive.class, "test.war")
                     .addAsWebInfResource(new File(WEBAPP_SRC, "WEB-INF/beans.xml"))
                     .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
@@ -59,7 +57,6 @@ public abstract class AbstractTestBase {
                     .addAsResource("import.sql")
                     .addPackages(true, "org.cajun.navy")
             ;
-            System.out.println("***** Archive created");
         }
 
         return webArchive;

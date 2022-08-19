@@ -21,6 +21,7 @@ public class ResponderDaoImpl implements ResponderDao {
     }
 
     @Override
+    @Transactional
     public Responder findById(long id) {
         return entityManager.find(Responder.class, id, LockModeType.OPTIMISTIC);
     }
