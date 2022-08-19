@@ -469,7 +469,10 @@
                                     <recordProvisioningState>true</recordProvisioningState>
                                     <feature-packs>
                                         <feature-pack>
-                                            <location>org.wildfly:wildfly-datasources-preview-galleon-pack:2.2.3.Final</location>
+                                            <location>org.wildfly:wildfly-cloud-legacy-galleon-pack:${version.wildfly}</location>
+                                        </feature-pack>
+                                        <feature-pack>
+                                            <location>org.wildfly:wildfly-datasources-galleon-pack:2.2.3.Final</location>
                                         </feature-pack>
                                     </feature-packs>
                                     <layers>

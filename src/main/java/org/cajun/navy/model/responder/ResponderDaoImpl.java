@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 
 public class ResponderDaoImpl implements ResponderDao {
@@ -13,6 +14,7 @@ public class ResponderDaoImpl implements ResponderDao {
     EntityManager entityManager;
 
     @Override
+    @Transactional
     public Responder create(Responder responder) {
         entityManager.persist(responder);
         return responder;
@@ -37,6 +39,7 @@ public class ResponderDaoImpl implements ResponderDao {
     }
 
     @Override
+    @Transactional
     public Responder update(Responder responder) {
 
         Responder toUpdate = findById(responder.getId());
@@ -102,6 +105,7 @@ public class ResponderDaoImpl implements ResponderDao {
     }
 
     @Override
+    @Transactional
     public void reset() {
         entityManager.createNamedQuery("Responder.reset").executeUpdate();
         entityManager.createNamedQuery("Responder.resetPerson").executeUpdate();
@@ -109,6 +113,7 @@ public class ResponderDaoImpl implements ResponderDao {
     }
 
     @Override
+    @Transactional
     public void clear() {
         entityManager.createNamedQuery("Responder.clearNonPersons").executeUpdate();
         entityManager.createNamedQuery("Responder.resetPerson").executeUpdate();
@@ -116,6 +121,7 @@ public class ResponderDaoImpl implements ResponderDao {
     }
 
     @Override
+    @Transactional
     public void resetPersonsDeleteBots() {
         entityManager.createNamedQuery("Responder.deleteNonPersons").executeUpdate();
         entityManager.createNamedQuery("Responder.resetPerson").executeUpdate();
@@ -123,6 +129,7 @@ public class ResponderDaoImpl implements ResponderDao {
     }
 
     @Override
+    @Transactional
     public void deleteAll() {
         entityManager.createNamedQuery("Responder.deleteAll").executeUpdate();
         entityManager.flush();

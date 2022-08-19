@@ -3,6 +3,7 @@ package org.cajun.navy.model.incident;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +16,7 @@ public class IncidentDaoImpl implements IncidentDao {
     EntityManager entityManager;
 
     @Override
+    @Transactional
     public Incident create(Incident incident) {
         return doCreate(incident);
     }
@@ -50,6 +52,7 @@ public class IncidentDaoImpl implements IncidentDao {
     }
 
     @Override
+    @Transactional
     public Incident merge(Incident incident) {
         Incident r = entityManager.merge(incident);
         entityManager.flush();
@@ -69,6 +72,7 @@ public class IncidentDaoImpl implements IncidentDao {
     }
 
     @Override
+    @Transactional
     public void deleteAll() {
         Query deleteAll = entityManager.createNamedQuery("Incident.deleteAll");
         deleteAll.executeUpdate();

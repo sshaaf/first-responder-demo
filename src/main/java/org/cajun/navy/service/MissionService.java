@@ -12,6 +12,7 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -63,6 +64,7 @@ public class MissionService {
         missionEmitter.send(mission);
     }
 
+    @Transactional
     public void create(Incident incident){
 
         Mission mission = new Mission();
@@ -96,8 +98,7 @@ public class MissionService {
         fireEvent(mission);
     }
 
-
-
+    @Transactional
     public void doResponderNextMove(Mission mission){
         if(mission != null || mission.getMissionId() != null){
             if(!mission.getSteps().isEmpty()) {
@@ -125,7 +126,6 @@ public class MissionService {
         }
         else throw new IllegalArgumentException("Cant do next move - Mission should not be null");
     }
-
 
     private ResponderLocationHistory getNewLocation(MissionStep step){
         if(step != null) {

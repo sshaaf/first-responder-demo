@@ -7,6 +7,7 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.List;
 
 
@@ -23,6 +24,7 @@ public class IncidentService {
     @Channel("incident")
     Emitter<Incident> incidentEmitter;
 
+    @Transactional
     public Incident createIncident(Incident incident) {
         Incident item = incidentDao.create(incident);
         missionService.create(item);
@@ -54,6 +56,7 @@ public class IncidentService {
         return incidentDao.findByIncidentId(incidentId);
     }
 
+    @Transactional
     public void deleteAllIncidents(){
         incidentDao.deleteAll();
     }

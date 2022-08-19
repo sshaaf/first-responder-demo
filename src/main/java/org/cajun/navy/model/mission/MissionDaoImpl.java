@@ -56,6 +56,7 @@ public class MissionDaoImpl implements MissionDao{
     }
 
     @Override
+    @Transactional
     public Mission merge(Mission mission) {
         Mission m = entityManager.merge(mission);
         entityManager.flush();
