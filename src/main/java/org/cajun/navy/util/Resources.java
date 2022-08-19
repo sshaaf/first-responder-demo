@@ -22,14 +22,14 @@
 package org.cajun.navy.util;
 
 import javax.ejb.Stateful;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 
 @Stateful
-@ApplicationScoped
+@RequestScoped
 public class Resources {
 
     @PersistenceContext(type = PersistenceContextType.EXTENDED)

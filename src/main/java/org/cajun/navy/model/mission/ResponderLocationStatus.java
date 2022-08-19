@@ -4,5 +4,5 @@ public enum ResponderLocationStatus {
 
     MOVING,
     PICKEDUP,
-    DROPPED;
+    DROPPED
 }

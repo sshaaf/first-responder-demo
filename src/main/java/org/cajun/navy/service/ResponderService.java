@@ -3,11 +3,11 @@ package org.cajun.navy.service;
 import org.cajun.navy.model.responder.Responder;
 import org.cajun.navy.model.responder.ResponderDao;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.List;
 
-@ApplicationScoped
+@RequestScoped
 public class ResponderService {
 
     @Inject

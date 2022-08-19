@@ -1,7 +1,6 @@
 package org.cajun.navy.resource;
 
 import org.cajun.navy.model.responder.Responder;
-import org.cajun.navy.model.responder.ResponderDao;
 import org.cajun.navy.service.ResponderService;
 
 import javax.enterprise.context.RequestScoped;

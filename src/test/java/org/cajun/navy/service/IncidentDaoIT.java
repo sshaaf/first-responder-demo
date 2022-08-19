@@ -17,21 +17,14 @@
 package org.cajun.navy.service;
 
 import org.cajun.navy.model.incident.IncidentDao;
-import org.cajun.navy.model.incident.IncidentDaoImpl;
-import org.cajun.navy.util.Resources;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import java.io.FileNotFoundException;
-
-import static org.assertj.core.api.Assertions.*;
 
 @RunWith(Arquillian.class)
 public class IncidentDaoIT {

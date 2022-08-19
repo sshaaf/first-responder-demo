@@ -10,19 +10,21 @@ import org.cajun.navy.model.mission.MissionStep;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import retrofit2.Response;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
-@ApplicationScoped
+@RequestScoped
 public class RoutePlanner {
 
-    private static Logger logger = Logger.getLogger(RoutePlanner.class.getName());
+    private static final Logger logger = Logger.getLogger(RoutePlanner.class.getName());
 
     // TODO: Get config property
     @Inject

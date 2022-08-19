@@ -1,8 +1,8 @@
 package org.cajun.navy.model.mission;
 
-
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.List;
 
 public class MissionDaoImpl implements MissionDao{
@@ -11,6 +11,7 @@ public class MissionDaoImpl implements MissionDao{
     EntityManager entityManager;
 
     @Override
+    @Transactional
     public Mission create(Mission mission) {
         entityManager.persist(mission);
         return mission;
@@ -46,5 +47,19 @@ public class MissionDaoImpl implements MissionDao{
     public List<Mission> getByResponder(String responderId) {
         return entityManager.createNamedQuery("Mission.byResponderId", Mission.class)
                 .setParameter("responderId", responderId).getResultList();
+
     }
+
+    @Override
+    public List<Mission> getCreatedAndUpdated(){
+        return entityManager.createNamedQuery("Mission.byCreateOrUpdated", Mission.class).getResultList();
+    }
+
+    @Override
+    public Mission merge(Mission mission) {
+        Mission m = entityManager.merge(mission);
+        entityManager.flush();
+        return m;
+    }
+
 }

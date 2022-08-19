@@ -1,14 +1,10 @@
 package org.cajun.navy.service;
 
-import io.smallrye.reactive.messaging.kafka.api.KafkaMetadataUtil;
-import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
 import org.cajun.navy.model.incident.Incident;
 import org.cajun.navy.model.incident.IncidentDao;
-import org.cajun.navy.util.JsonMapper;
-import org.eclipse.microprofile.reactive.messaging.*;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.List;
@@ -21,13 +17,24 @@ public class IncidentService {
     IncidentDao incidentDao;
 
     @Inject
+    MissionService missionService;
+
+    @Inject
     @Channel("incident")
-    Emitter<Incident> emitter;
+    Emitter<Incident> incidentEmitter;
 
     public Incident createIncident(Incident incident) {
         Incident item = incidentDao.create(incident);
-        send(item);
+        missionService.create(item);
+
+        // fireEvent to Kafka
+        fireEvent(item);
         return item;
+    }
+
+    // Emit incident
+    public void fireEvent(Incident incident){
+        incidentEmitter.send(incident);
     }
 
 
@@ -50,37 +57,5 @@ public class IncidentService {
     public void deleteAllIncidents(){
         incidentDao.deleteAll();
     }
-
-    // Emit incident
-    public void send(Incident incident){
-        emitter.send(incident);
-    }
-
-
-    @Incoming("incident")
-    @Outgoing("send-event")
-    public String handle(Incident incident) {
-        // Get the incident from the channel and forward it as a String.
-        // any processing should be done here before its changed into String,
-        // since the intention is to send the JSON into the kafka topic
-        return JsonMapper.getJson(incident);
-    }
-
-    @Incoming("send-event")
-    @Outgoing("incident-reported-event")
-    public Message<String> sendToKafka(String msg) {
-
-        Message<String> m = Message.of(msg);
-
-        // Create Metadata containing the Kafka key
-        OutgoingKafkaRecordMetadata<Integer> md = OutgoingKafkaRecordMetadata
-                .<Integer>builder()
-                .build();
-
-        // The returned message will have the metadata added
-        return KafkaMetadataUtil.writeOutgoingKafkaMetadata(m, md);
-    }
-
-
 
 }

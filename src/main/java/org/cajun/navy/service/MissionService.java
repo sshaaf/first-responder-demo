@@ -1,9 +1,5 @@
 package org.cajun.navy.service;
 
-
-
-import io.smallrye.reactive.messaging.kafka.api.IncomingKafkaRecordMetadata;
-import io.smallrye.reactive.messaging.kafka.api.KafkaMetadataUtil;
 import org.cajun.navy.map.DisasterInfo;
 import org.cajun.navy.map.RoutePlanner;
 import org.cajun.navy.map.Shelter;
@@ -11,18 +7,19 @@ import org.cajun.navy.model.incident.Incident;
 import org.cajun.navy.model.mission.*;
 import org.cajun.navy.model.responder.Responder;
 import org.cajun.navy.model.responder.ResponderDao;
-import org.cajun.navy.util.JsonMapper;
-import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.eclipse.microprofile.reactive.messaging.Message;
-import org.eclipse.microprofile.reactive.messaging.Outgoing;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.logging.Logger;
 
 
-@ApplicationScoped
+@RequestScoped
 public class MissionService {
+
+    private static final Logger logger = Logger.getLogger(MissionService.class.getName());
 
     @Inject
     MissionDao missionDao;
@@ -36,9 +33,9 @@ public class MissionService {
     @Inject
     RoutePlanner routePlanner;
 
-    public Mission create(Mission mission){
-        return missionDao.create(mission);
-    }
+    @Inject
+    @Channel("mission")
+    Emitter<Mission> missionEmitter;
 
     public List<Mission> findAll(){
         responderService.availableResponders();
@@ -57,28 +54,16 @@ public class MissionService {
         return missionDao.getByResponder(responderId);
     }
 
-
-    @Incoming("in-incident-reported-event")
-    @Outgoing("create-mission")
-    public Incident recieveCreatedIncident(Message<String> message){
-
-        IncomingKafkaRecordMetadata<Integer, String> md = KafkaMetadataUtil.readIncomingKafkaMetadata(message).get();
-        String msg =
-                "Received from Kafka, storing it in database\n" +
-                        "\t%s\n" +
-                        "\tkey: %d; partition: %d, topic: %s";
-        msg = String.format(msg, message.getPayload(), md.getKey(), md.getPartition(), md.getTopic());
-        System.out.println(msg);
-
-        Incident incident = JsonMapper.getIncident(message.getPayload());
-
-        message.ack();
-        return incident;
+    public List<Mission> getAllCreatedOrUpdated(){
+        return missionDao.getCreatedAndUpdated();
     }
 
-    @Incoming("create-mission")
-    public void doCreateMission(Incident incident){
-        System.out.println("creating missions!!");
+    // Emit mission
+    public void fireEvent(Mission mission){
+        missionEmitter.send(mission);
+    }
+
+    public void create(Incident incident){
 
         Mission mission = new Mission();
         mission.setStatus(MissionStatus.CREATED.toString());
@@ -94,22 +79,65 @@ public class MissionService {
         mission.setResponderStartLatitude(responder.getLatitude());
         mission.setResponderStartLongitude(responder.getLongitude());
 
-        // Get directions for the mission
+
+        // Set destination location
         Shelter shelter = DisasterInfo.getRandomShelter();
+        mission.setDestinationLatitude(shelter.getLatitude());
+        mission.setDestinationLongtitude(shelter.getLongitude());
+
+        // Get directions for the mission
         mission.setSteps(getAllSteps(mission.responderLocation(), shelter.shelterLocation(), mission.incidentLocation()));
 
+
         missionDao.create(mission);
+        logger.info("Created new mission "+mission.getMissionId());
+
+        // fireEvent to Kafka
+        fireEvent(mission);
     }
 
 
+
+    public void doResponderNextMove(Mission mission){
+        if(mission != null || mission.getMissionId() != null){
+            if(!mission.getSteps().isEmpty()) {
+                // if the steps from the routeplan equals the movement of the responder
+                if (mission.getSteps().size() == mission.getResponderLocationHistory().size()) {
+                    mission.setStatus(MissionStatus.COMPLETED.toString());
+                }
+
+                // if the mission was just created, we assume this is the first time to move and hence status is updated.
+                if (mission.getStatus().equals(MissionStatus.CREATED.toString())) {
+                    mission.setStatus(MissionStatus.UPDATED.toString());
+                }
+                // Make next move while status is still in UPDATED, this is also true for the CREATED state since we change it to updated.
+                if (mission.getStatus().equals(MissionStatus.UPDATED.toString())){
+                    // Make next move
+                    MissionStep thisStep = mission.getSteps().get(mission.getResponderLocationHistory().size());
+                    ResponderLocationHistory locationHistory = getNewLocation(thisStep);
+                    mission.getResponderLocationHistory().add(locationHistory);
+                    logger.info(mission.getMissionId()+": updating with new move "+locationHistory.getLatitude() +" , "+locationHistory.getLongitude());
+                }
+                missionDao.merge(mission);
+                // fireEvent to Kafka
+                fireEvent(mission);
+            } else throw new IllegalArgumentException("Mission steps not found, check if the Routeplanner executed correctly.");
+        }
+        else throw new IllegalArgumentException("Cant do next move - Mission should not be null");
+    }
+
+
+    private ResponderLocationHistory getNewLocation(MissionStep step){
+        if(step != null) {
+            return new ResponderLocationHistory(step.getLatitude(), step.getLongitude(), System.currentTimeMillis());
+        }
+        else throw new IllegalArgumentException("Step is null cannot be added to responders location history");
+    }
+
+
+    // get directions
+    // origin = respondersLocation, destination = shelterLocation , waypoint
     public List<MissionStep> getAllSteps(Location origin, Location destination, Location wayPoint){
-
-        System.out.println("origin: "+origin);
-        System.out.println("destination: "+destination);
-        System.out.println("waypoint: "+wayPoint);
-
-        // get directions
-        // origin = respondersLocation, destination = shelterLocation , waypoint
         return  routePlanner.getDirections(origin, destination, wayPoint);
 
     }

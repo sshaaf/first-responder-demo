@@ -1,11 +1,11 @@
 package org.cajun.navy.model.incident;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
 
 
 public class IncidentDaoImpl implements IncidentDao {

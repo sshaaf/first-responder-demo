@@ -15,5 +15,7 @@ public interface MissionDao {
 
     List<Mission>  getByResponder(String responderId);
 
+    List<Mission> getCreatedAndUpdated();
 
+    Mission merge(Mission mission);
 }

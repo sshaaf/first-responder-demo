@@ -1,8 +1,6 @@
 package org.cajun.navy.model.mission;
 
 import javax.persistence.*;
-
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +14,7 @@ import java.util.UUID;
         @NamedQuery(name = "Mission.findAll", query = "SELECT m from Mission m"),
         @NamedQuery(name = "Mission.byMissionId", query = "SELECT m FROM Mission m WHERE m.missionId = :missionId"),
         @NamedQuery(name = "Mission.byStatus", query = "SELECT m from Mission m WHERE m.status = :status"),
+        @NamedQuery(name = "Mission.byCreateOrUpdated", query = "SELECT m from Mission m WHERE m.status = 'CREATED' OR m.status = 'UPDATED'"),
         @NamedQuery(name = "Mission.byResponderId", query = "SELECT m from Mission m WHERE m.responderId = :responderId"),
 })
 
@@ -52,11 +51,11 @@ public class Mission {
     @Column(name = "mission_status")
     private String status;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "mission_id")
     private List<ResponderLocationHistory> responderLocationHistory;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "mission_id")
     private List<MissionStep> steps;
 
