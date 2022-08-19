@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.cajun.navy.service.util.KafkaTestContainer;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -38,15 +38,13 @@ public abstract class AbstractTestBase {
     private static WebArchive webArchive;
 
     @Deployment
-    public static org.jboss.shrinkwrap.api.Archive getDeployment() throws IOException {
+    public static Archive getDeployment() throws IOException {
         if (webArchive == null) {
-            System.out.println("***** Starting Kafka");
-            KafkaTestContainer server = KafkaTestContainer.getInstance();
             System.out.println("***** Resolving deps");
             PomEquippedResolveStage pom = Maven.resolver().loadPomFromFile("pom.xml")
                     .importDependencies(ScopeType.TEST, ScopeType.RUNTIME);
             String config = Files.readString(Path.of("src/main/resources/META-INF/microprofile-config.properties"));
-            config = config.replaceAll("localhost:9092", "" + server.getContainer().getBootstrapServers());
+            config = config.replaceAll("localhost:9092", "" + System.getProperty("kafka.server"));
 
             System.out.println("***** Creating archive");
             webArchive = ShrinkWrap.create(WebArchive.class, "test.war")

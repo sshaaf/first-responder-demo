@@ -404,26 +404,17 @@
                         <executions>
                             <execution>
                                 <id>kafka</id>
-<!--                                <phase>pre-integration-test</phase>-->
+                                <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>execute</goal>
                                 </goals>
                                 <configuration>
                                     <source>
-                                        import org.apache.kafka.clients.admin.AdminClient
-
-                                    def image = org.testcontainers.utility.DockerImageName.parse("confluentinc/cp-kafka")
-                                            .withTag("7.2.1")
-                                    def kafka = new org.testcontainers.containers.KafkaContainer(image)
-//                                            .withExposedPorts(49152)
-//                                            .withEnv("KAFKA_LISTENERS", "PLAINTEXT://0.0.0.0:49152")
-                                    kafka.start()
-                                    project.properties.setProperty('mp.messaging.connector.smallrye-kafka.bootstrap.servers',
-                                            kafka.bootstrapServers)
-                                    def props = new Properties()
-                                    props.put("bootstrap.servers", kafka.bootstrapServers)
-                                    AdminClient adminClient = AdminClient.create(props)
-                                    adminClient.createTopics(ImmutableList.of("IncidentReportedEvent"))
+                                        def image = org.testcontainers.utility.DockerImageName.parse("confluentinc/cp-kafka")
+                                                .withTag("7.2.1")
+                                        def kafka = new org.testcontainers.containers.KafkaContainer(image)
+                                        kafka.start()
+                                        project.properties.setProperty('kafka.server', kafka.bootstrapServers)
                                     </source>
                                 </configuration>
                             </execution>
@@ -511,6 +502,7 @@
                                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                                         <jboss.home>${project.basedir}/target/wildfly-${version.wildfly}</jboss.home>
                                         <org.wildfly.datasources.postgresql.connection-url>${jdbc.url}</org.wildfly.datasources.postgresql.connection-url>
+                                        <kafka.server>${kafka.server}</kafka.server>
                                     </systemPropertyVariables>
                                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
                                 </configuration>
