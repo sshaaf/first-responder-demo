@@ -14,17 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cajun.navy.service;
+package org.cajun.navy.service.incident;
 
 import javax.inject.Inject;
 
 import org.cajun.navy.model.incident.IncidentDao;
+import org.cajun.navy.service.AbstractTestBase;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith(Arquillian.class)
 public class IncidentDaoIT extends AbstractTestBase {
     @Inject
     private IncidentDao incidentDao;
