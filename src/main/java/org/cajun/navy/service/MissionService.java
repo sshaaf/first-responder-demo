@@ -35,6 +35,9 @@ public class MissionService {
     RoutePlanner routePlanner;
 
     @Inject
+    DisasterInfo disasterInfo;
+
+    @Inject
     @Channel("mission")
     Emitter<Mission> missionEmitter;
 
@@ -83,7 +86,7 @@ public class MissionService {
 
 
         // Set destination location
-        Shelter shelter = DisasterInfo.getRandomShelter();
+        Shelter shelter = disasterInfo.getRandomShelter();
         mission.setDestinationLatitude(shelter.getLatitude());
         mission.setDestinationLongtitude(shelter.getLongitude());
 

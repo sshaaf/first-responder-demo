@@ -17,17 +17,6 @@ public class Shelter {
     protected Shelter() {
     }
 
-    public static Shelter from(String id, String name, BigDecimal lon, BigDecimal lat, int rescued) {
-        Shelter shelter = new Shelter();
-        shelter.id = id;
-        shelter.name = name;
-        shelter.longitude = lon;
-        shelter.latitude = lat;
-        shelter.rescued = rescued;
-
-        return shelter;
-    }
-
     public String getId() {
         return this.id;
     }
