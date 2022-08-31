@@ -54,8 +54,8 @@ public class DisasterInfo {
 
     // just get a random shleter from the loaded shelters.
     public Shelter getRandomShelter(){
-        int min = 1;
-        int max = shelters.length;
+        int min = 0;
+        int max = shelters.length-1;
         int key = (int) (Math.random() * (max - min)) + min;
         return shelters[key];
     }

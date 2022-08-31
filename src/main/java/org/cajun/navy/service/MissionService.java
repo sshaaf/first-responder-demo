@@ -7,6 +7,11 @@ import org.cajun.navy.model.incident.Incident;
 import org.cajun.navy.model.mission.*;
 import org.cajun.navy.model.responder.Responder;
 import org.cajun.navy.model.responder.ResponderDao;
+import org.cajun.navy.service.model.Mission;
+import org.cajun.navy.service.model.Mission.Builder;
+
+import org.cajun.navy.service.model.MissionStep;
+import org.cajun.navy.service.model.ResponderLocationHistory;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
@@ -15,6 +20,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 @RequestScoped
@@ -39,38 +45,42 @@ public class MissionService {
 
     @Inject
     @Channel("mission")
-    Emitter<Mission> missionEmitter;
+    Emitter<MissionEntity> missionEmitter;
 
     public List<Mission> findAll(){
-        responderService.availableResponders();
-        return missionDao.findAll();
+        return missionDao
+                .findAll()
+                .stream()
+                .map(missionEntity -> toMission(missionEntity))
+                .collect(Collectors.toList());
     }
 
     public Mission findByMissionId(String missionId){
-        return missionDao.findByMissionId(missionId);
+        MissionEntity me = missionDao.findByMissionId(missionId);
+        return toMission(me);
     }
 
-    public List<Mission> findByStatus(String status){
+    public List<MissionEntity> findByStatus(String status){
         return missionDao.findByStatus(status);
     }
 
-    public List<Mission> getByResponder(String responderId){
+    public List<MissionEntity> getByResponder(String responderId){
         return missionDao.getByResponder(responderId);
     }
 
-    public List<Mission> getAllCreatedOrUpdated(){
+    public List<MissionEntity> getAllCreatedOrUpdated(){
         return missionDao.getCreatedAndUpdated();
     }
 
     // Emit mission
-    public void fireEvent(Mission mission){
+    public void fireEvent(MissionEntity mission){
         missionEmitter.send(mission);
     }
 
     @Transactional
     public void create(Incident incident){
 
-        Mission mission = new Mission();
+        MissionEntity mission = new MissionEntity();
         mission.setStatus(MissionStatus.CREATED.toString());
 
         // Set incident id and location
@@ -87,8 +97,8 @@ public class MissionService {
 
         // Set destination location
         Shelter shelter = disasterInfo.getRandomShelter();
-        mission.setDestinationLatitude(shelter.getLatitude());
-        mission.setDestinationLongtitude(shelter.getLongitude());
+        mission.setDestinationLatitude(shelter.getLat());
+        mission.setDestinationLongtitude(shelter.getLon());
 
         // Get directions for the mission
         mission.setSteps(getAllSteps(mission.responderLocation(), shelter.shelterLocation(), mission.incidentLocation()));
@@ -101,8 +111,9 @@ public class MissionService {
         fireEvent(mission);
     }
 
+
     @Transactional
-    public void doResponderNextMove(Mission mission){
+    public void doResponderNextMove(MissionEntity mission){
         if(mission != null || mission.getMissionId() != null){
             if(!mission.getSteps().isEmpty()) {
                 // if the steps from the routeplan equals the movement of the responder
@@ -117,8 +128,8 @@ public class MissionService {
                 // Make next move while status is still in UPDATED, this is also true for the CREATED state since we change it to updated.
                 if (mission.getStatus().equals(MissionStatus.UPDATED.toString())){
                     // Make next move
-                    MissionStep thisStep = mission.getSteps().get(mission.getResponderLocationHistory().size());
-                    ResponderLocationHistory locationHistory = getNewLocation(thisStep);
+                    MissionStepEntity thisStep = mission.getSteps().get(mission.getResponderLocationHistory().size());
+                    ResponderLocationHistoryEntity locationHistory = getNewLocation(thisStep);
                     mission.getResponderLocationHistory().add(locationHistory);
                     logger.info(mission.getMissionId()+": updating with new move "+locationHistory.getLatitude() +" , "+locationHistory.getLongitude());
                 }
@@ -130,9 +141,9 @@ public class MissionService {
         else throw new IllegalArgumentException("Cant do next move - Mission should not be null");
     }
 
-    private ResponderLocationHistory getNewLocation(MissionStep step){
+    private ResponderLocationHistoryEntity getNewLocation(MissionStepEntity step){
         if(step != null) {
-            return new ResponderLocationHistory(step.getLatitude(), step.getLongitude(), System.currentTimeMillis());
+            return new ResponderLocationHistoryEntity(step.getLatitude(), step.getLongitude(), System.currentTimeMillis());
         }
         else throw new IllegalArgumentException("Step is null cannot be added to responders location history");
     }
@@ -140,9 +151,63 @@ public class MissionService {
 
     // get directions
     // origin = respondersLocation, destination = shelterLocation , waypoint
-    public List<MissionStep> getAllSteps(Location origin, Location destination, Location wayPoint){
+    public List<MissionStepEntity> getAllSteps(Location origin, Location destination, Location wayPoint){
         return  routePlanner.getDirections(origin, destination, wayPoint);
 
     }
+
+
+    private Mission toMission(MissionEntity entity){
+        if(entity != null) {
+            Mission m = new Mission.Builder(entity.getMissionId())
+                    .incidentId(entity.getIncidentId())
+                    .responderId(entity.getResponderId())
+                    .status(entity.getStatus())
+                    .responderStartLatitude(entity.getResponderStartLatitude())
+                    .responderStartLongitude(entity.getResponderStartLongitude())
+                    .incidentLatitude(entity.getIncidentLatitude())
+                    .incidentLongitude(entity.getIncidentLongtitude())
+                    .desitnationLatitude(entity.getDestinationLatitude())
+                    .desitnationLongitude(entity.getDestinationLongtitude())
+                    .responderLocationHistory(toResponderLocationHistory(missionDao.getResponderLocationHistoryByMission(entity.getMissionId())))
+                    .missionSteps(toMissionStep(missionDao.getMissionStepsByMission(entity.getMissionId())))
+                    .build();
+            return m;
+        }
+        else throw new IllegalArgumentException("toMission expects a MissionEntity and not null");
+    }
+
+    private List<ResponderLocationHistory> toResponderLocationHistory(List<ResponderLocationHistoryEntity> entities){
+        return entities.stream()
+                .map(responderLocationHistoryEntity -> toResponderLocationHistory(responderLocationHistoryEntity))
+                .collect(Collectors.toList());
+    }
+
+    private ResponderLocationHistory toResponderLocationHistory(ResponderLocationHistoryEntity entity){
+        return new ResponderLocationHistory
+                .Builder()
+                .latitude(entity.getLatitude())
+                .longitude(entity.getLongitude())
+                .timestamp(entity.getTimestamp())
+                .build();
+
+    }
+
+    private List<MissionStep> toMissionStep(List<MissionStepEntity> entities){
+        return entities.stream()
+                .map(missionStepEntity -> toMissionStep(missionStepEntity))
+                .collect(Collectors.toList());
+    }
+
+    private MissionStep toMissionStep(MissionStepEntity missionStepEntity){
+        return  new MissionStep
+                .Builder()
+                .latitude(missionStepEntity.getLatitude())
+                .longitude(missionStepEntity.getLongitude())
+                .wayPoint(missionStepEntity.isWayPoint())
+                .destination(missionStepEntity.isDestination())
+                .build();
+    }
+
 
 }

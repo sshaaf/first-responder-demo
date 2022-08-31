@@ -1,6 +1,6 @@
 package org.cajun.navy.model.responder;
 
-import org.cajun.navy.model.mission.Mission;
+import org.cajun.navy.model.mission.MissionEntity;
 import org.cajun.navy.service.MissionService;
 
 import javax.ejb.Schedule;
@@ -19,14 +19,10 @@ public class ResponderSimulatorTask {
 
     @Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)
     public void doMoveResponderLocation(){
-        List<Mission> missions = missionService.getAllCreatedOrUpdated();
+        List<MissionEntity> missions = missionService.getAllCreatedOrUpdated();
         logger.info("Are there any missions for next move? "+missions.size());
         missions.forEach(mission -> {
             missionService.doResponderNextMove(mission);
         });
     }
-
-
-
-
 }

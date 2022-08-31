@@ -423,7 +423,8 @@
                                         db = new org.testcontainers.containers.PostgreSQLContainer("postgres:latest")
                                                 .withDatabaseName("${frdemo.dbname}")
                                                 .withUsername("${frdemo.dbuser}")
-                                                .withPassword("${frdemo.dbpass}")
+                                                .withPass
+                                        word("${frdemo.dbpass}")
                                         db.start()
                                         project.properties.setProperty('jdbc.url', db.getJdbcUrl())
                                     </source>

@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-@Path("/responders/")
+@Path("/responder-service/")
 @RequestScoped
 public class ResponderResource {
 
@@ -71,6 +71,7 @@ public class ResponderResource {
 
         @GET
         @Produces(MediaType.APPLICATION_JSON)
+        @Path("/responders")
         public Response allResponders(@QueryParam("limit") Optional<Integer> limit, @QueryParam("offset") Optional<Integer> offset) {
                 List<Responder> responders;
                 if (limit.isPresent()) {

@@ -182,4 +182,65 @@ public class Responder {
         return result;
     }
 
+
+    public static class Builder {
+
+        private final Responder responder;
+
+        public Builder(long id) {
+            this.responder = new Responder();
+            responder.id = id;
+        }
+
+        public Builder name(String name) {
+            responder.name = name;
+            return this;
+        }
+
+        public Builder phoneNumber(String phoneNumber) {
+            responder.phoneNumber = phoneNumber;
+            return this;
+        }
+
+        public Builder latitude(BigDecimal latitude) {
+            responder.latitude = latitude;
+            return this;
+        }
+
+        public Builder longitude(BigDecimal longitude) {
+            responder.longitude = longitude;
+            return this;
+        }
+
+        public Builder boatCapacity(Integer boatCapacity) {
+            responder.boatCapacity = boatCapacity;
+            return this;
+        }
+
+        public Builder medicalKit(Boolean medicalKit) {
+            responder.medicalKit = medicalKit;
+            return this;
+        }
+
+        public Builder available(Boolean available) {
+            responder.available = available;
+            return this;
+        }
+
+        public Builder person(Boolean person) {
+            responder.person = person;
+            return this;
+        }
+
+        public Builder enrolled(Boolean enrolled) {
+            responder.enrolled = enrolled;
+            return this;
+        }
+
+        public Responder build() {
+            return responder;
+        }
+
+    }
+
 }

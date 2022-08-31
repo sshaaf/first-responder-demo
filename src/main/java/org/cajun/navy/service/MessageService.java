@@ -3,7 +3,7 @@ package org.cajun.navy.service;
 import io.smallrye.reactive.messaging.kafka.api.KafkaMetadataUtil;
 import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
 import org.cajun.navy.model.incident.Incident;
-import org.cajun.navy.model.mission.Mission;
+import org.cajun.navy.model.mission.MissionEntity;
 import org.eclipse.microprofile.reactive.messaging.*;
 
 import javax.enterprise.context.Dependent;
@@ -34,7 +34,7 @@ public class MessageService {
 
     @Incoming("mission")
     @Outgoing("mission-event")
-    public Message<String> sendToKafka(Mission mission) {
+    public Message<String> sendToKafka(MissionEntity mission) {
 
         String data = jsonb.toJson(mission);
         Message<String> m = Message.of(data);

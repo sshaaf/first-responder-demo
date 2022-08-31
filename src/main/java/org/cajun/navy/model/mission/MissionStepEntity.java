@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 @Entity
 @Access(AccessType.FIELD)
 @Table(name = "mission_step")
-public class MissionStep {
+public class MissionStepEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,7 +26,7 @@ public class MissionStep {
 
     @ManyToOne
     @JoinColumn(name = "mission_id", insertable = false, updatable = false)
-    private Mission mission;
+    private MissionEntity mission;
 
     public BigDecimal getLatitude() {
         return latitude;
@@ -48,7 +48,7 @@ public class MissionStep {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MissionStep step = (MissionStep) o;
+        MissionStepEntity step = (MissionStepEntity) o;
 
         return (latitude != null && step.latitude != null && latitude.compareTo(step.latitude) == 0) || (latitude == null && step.latitude == null) &&
                 (longitude != null && step.longitude != null && longitude.compareTo(step.longitude) == 0) || (latitude == null && step.latitude == null) &&
@@ -62,7 +62,7 @@ public class MissionStep {
 
     public static class Builder {
 
-        private final MissionStep missionStep = new MissionStep();
+        private final MissionStepEntity missionStep = new MissionStepEntity();
 
         public Builder(BigDecimal latitude, BigDecimal longitude) {
             missionStep.latitude = latitude;
@@ -79,7 +79,7 @@ public class MissionStep {
             return this;
         }
 
-        public MissionStep build() {
+        public MissionStepEntity build() {
             return missionStep;
         }
     }
