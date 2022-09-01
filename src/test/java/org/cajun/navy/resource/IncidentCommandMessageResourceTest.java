@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class IncidentResourceTest {
+public class IncidentCommandMessageResourceTest {
 
     @Test
     public void incidents() {

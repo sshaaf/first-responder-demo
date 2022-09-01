@@ -4,11 +4,11 @@ import org.cajun.navy.map.DisasterInfo;
 import org.cajun.navy.map.RoutePlanner;
 import org.cajun.navy.map.Shelter;
 import org.cajun.navy.model.incident.Incident;
+import org.cajun.navy.model.incident.IncidentStatus;
 import org.cajun.navy.model.mission.*;
 import org.cajun.navy.model.responder.Responder;
 import org.cajun.navy.model.responder.ResponderDao;
 import org.cajun.navy.service.model.Mission;
-import org.cajun.navy.service.model.Mission.Builder;
 
 import org.cajun.navy.service.model.MissionStep;
 import org.cajun.navy.service.model.ResponderLocationHistory;
@@ -42,6 +42,9 @@ public class MissionService {
 
     @Inject
     DisasterInfo disasterInfo;
+
+    @Inject
+    IncidentService incidentService;
 
     @Inject
     @Channel("mission")
@@ -119,6 +122,7 @@ public class MissionService {
                 // if the steps from the routeplan equals the movement of the responder
                 if (mission.getSteps().size() == mission.getResponderLocationHistory().size()) {
                     mission.setStatus(MissionStatus.COMPLETED.toString());
+                    incidentService.updateStatus(IncidentStatus.RESCUED, mission.getIncidentId());
                 }
 
                 // if the mission was just created, we assume this is the first time to move and hence status is updated.
@@ -129,6 +133,9 @@ public class MissionService {
                 if (mission.getStatus().equals(MissionStatus.UPDATED.toString())){
                     // Make next move
                     MissionStepEntity thisStep = mission.getSteps().get(mission.getResponderLocationHistory().size());
+                    if(thisStep.isWayPoint()){
+                        incidentService.updateStatus(IncidentStatus.PICKEDUP, mission.getIncidentId());
+                    }
                     ResponderLocationHistoryEntity locationHistory = getNewLocation(thisStep);
                     mission.getResponderLocationHistory().add(locationHistory);
                     logger.info(mission.getMissionId()+": updating with new move "+locationHistory.getLatitude() +" , "+locationHistory.getLongitude());

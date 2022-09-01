@@ -2,6 +2,7 @@ package org.cajun.navy.service;
 
 import org.cajun.navy.model.incident.Incident;
 import org.cajun.navy.model.incident.IncidentDao;
+import org.cajun.navy.model.incident.IncidentStatus;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
@@ -21,8 +22,12 @@ public class IncidentService {
     MissionService missionService;
 
     @Inject
-    @Channel("incident")
-    Emitter<Incident> incidentEmitter;
+    @Channel("incident-event")
+    Emitter<Incident> incidentEventEmitter;
+
+    @Inject
+    @Channel("incident-command")
+    Emitter<Incident> incidentCommandEmitter;
 
     @Transactional
     public Incident createIncident(Incident incident) {
@@ -36,9 +41,16 @@ public class IncidentService {
 
     // Emit incident
     public void fireEvent(Incident incident){
-        incidentEmitter.send(incident);
+        incidentEventEmitter.send(incident);
+        incidentCommandEmitter.send(incident);
     }
 
+    public void updateStatus(IncidentStatus status, String incidentId){
+        Incident incident = findByIncidentId(incidentId);
+        incident.setStatus(status.toString());
+        incidentDao.merge(incident);
+        fireEvent(incident);
+    }
 
     public List<Incident> findByStatus(String status) {
         return incidentDao.findByStatus(status);
