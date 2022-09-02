@@ -1,5 +1,6 @@
 package org.cajun.navy.model.responder;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -57,6 +58,7 @@ public class Responder {
     @Column(name = "enrolled")
     private Boolean enrolled;
 
+    @JsonbTransient
     @Column(name = "version")
     @Version
     private long version;

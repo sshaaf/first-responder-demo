@@ -2,6 +2,7 @@ package org.cajun.navy.service;
 
 import org.cajun.navy.model.responder.Responder;
 import org.cajun.navy.model.responder.ResponderDao;
+import org.cajun.navy.model.responder.ResponderStats;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
@@ -36,6 +37,11 @@ public class ResponderService {
 
     public Responder findByName(String name){
         return responderDao.findByName(name);
+    }
+
+    @Transactional
+    public ResponderStats getResponderStats() {
+        return new ResponderStats(responderDao.activeRespondersCount(), responderDao.enrolledRespondersCount());
     }
 
     @Transactional

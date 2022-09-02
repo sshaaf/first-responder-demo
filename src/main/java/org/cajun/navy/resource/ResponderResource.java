@@ -24,7 +24,7 @@ public class ResponderResource {
         @Path("stats")
         @Produces(MediaType.APPLICATION_JSON)
         public Response stats() {
-                return Response.ok(service.activeRespondersCount()).build();
+                return Response.ok(service.getResponderStats()).build();
         }
 
         @GET
