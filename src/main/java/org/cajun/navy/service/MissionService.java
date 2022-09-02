@@ -8,6 +8,7 @@ import org.cajun.navy.model.incident.IncidentStatus;
 import org.cajun.navy.model.mission.*;
 import org.cajun.navy.model.responder.Responder;
 import org.cajun.navy.model.responder.ResponderDao;
+import org.cajun.navy.service.message.model.ResponderLocationMessage;
 import org.cajun.navy.service.model.Mission;
 
 import org.cajun.navy.service.model.MissionStep;
@@ -54,6 +55,9 @@ public class MissionService {
     @Channel("mission-command")
     Emitter<Mission> missionCommandEmitter;
 
+    @Inject
+    @Channel("responder-location")
+    Emitter<ResponderLocationMessage> responderLocationEmitter;
 
     public List<Mission> findAll(){
         return missionDao
@@ -87,6 +91,11 @@ public class MissionService {
         // as per the requirements, only send the command once mission is created.
         if(mission.getStatus().equals(MissionStatus.CREATED.toString()))
             missionCommandEmitter.send(mission);
+    }
+
+    // Emit responder Location
+    public void fireEvent(ResponderLocationMessage message){
+        responderLocationEmitter.send(message);
     }
 
     @Transactional
@@ -132,6 +141,16 @@ public class MissionService {
                 if (mission.getSteps().size() == mission.getResponderLocationHistory().size()) {
                     mission.setStatus(MissionStatus.COMPLETED.toString());
                     incidentService.updateStatus(IncidentStatus.RESCUED, mission.getIncidentId());
+
+                    //ensure responder is available again
+                    Responder responder = responderService.findById(Integer.valueOf(mission.getResponderId()));
+                    responder.setEnrolled(true);
+                    if(responder.isPerson())
+                        responder.setAvailable(false);
+                    else
+                        responder.setAvailable(true);
+                    responderService.update(responder);
+
                     // fireEvent to Kafka
                     fireEvent(toMission(mission));
                 }
@@ -151,6 +170,17 @@ public class MissionService {
                     }
                     ResponderLocationHistoryEntity locationHistory = getNewLocation(thisStep);
                     mission.getResponderLocationHistory().add(locationHistory);
+
+                    // creating the responder message to fire with, we do this here, becasue we have the reponders location history at this exact point
+                    ResponderLocationMessage locationMessage = new ResponderLocationMessage.Builder(mission.getResponderId())
+                            .missionId(mission.getMissionId())
+                            .incidentId(mission.getIncidentId())
+                            .status(mission.getStatus(), thisStep.isWayPoint())
+                            .lat(locationHistory.getLatitude())
+                            .lon(locationHistory.getLongitude()).build();
+
+                    // send updated responder location
+                    fireEvent(locationMessage);
                     logger.info(mission.getMissionId()+": updating with new move "+locationHistory.getLatitude() +" , "+locationHistory.getLongitude());
                 }
                 missionDao.merge(mission);

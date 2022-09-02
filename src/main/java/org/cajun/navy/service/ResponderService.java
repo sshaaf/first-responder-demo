@@ -2,6 +2,8 @@ package org.cajun.navy.service;
 
 import org.cajun.navy.model.responder.Responder;
 import org.cajun.navy.model.responder.ResponderDao;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -13,6 +15,15 @@ public class ResponderService {
 
     @Inject
     ResponderDao responderDao;
+
+    @Inject
+    @Channel("responder-command")
+    Emitter<Responder> responderCommandEmitter;
+
+    @Inject
+    @Channel("responder-event")
+    Emitter<Responder> responderEventEmitter;
+
 
     @Transactional
     public Responder create(Responder responder){
@@ -29,7 +40,9 @@ public class ResponderService {
 
     @Transactional
     public Responder update(Responder responder){
-        return responderDao.update(responder);
+        Responder item = responderDao.update(responder);
+        fireEvent(item);
+        return item;
     }
 
     public List<Responder> availableResponders(){
@@ -90,6 +103,11 @@ public class ResponderService {
 
     public Long activeRespondersCount(){
         return responderDao.activeRespondersCount();
+    }
+
+    public void fireEvent(Responder responder){
+        responderCommandEmitter.send(responder);
+        responderEventEmitter.send(responder);
     }
 
 }

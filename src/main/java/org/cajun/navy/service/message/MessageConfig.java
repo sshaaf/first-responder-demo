@@ -4,15 +4,43 @@ import org.cajun.navy.model.mission.MissionStatus;
 
 public interface MessageConfig {
 
-    public String INCIDENT_MESSAGE_SOURCE ="emergency-response/incident-service";
-    public String INCIDENT_UPDATE_COMMAND="UpdateIncidentCommand";
-    public enum IncidentEvent {
+    String INCIDENT_MESSAGE_SOURCE ="emergency-response/incident-service";
+    String INCIDENT_UPDATE_COMMAND="UpdateIncidentCommand";
+    enum IncidentEvent {
         IncidentReportedEvent, IncidentUpdatedEvent
     }
 
-    public String MISSION_MESSAGE_SOURCE ="emergency-response/mission-service";
-    public String MISSION_CREATED_COMMAND="CreateMissionCommand";
-    public enum MissionEvent {
+    String RESPONDER_LOCATION_UPDATED_EVENT="ResponderLocationUpdatedEvent";
+    String RESPONDER_MESSAGE_SOURCE ="emergency-response/responder-service";
+
+    enum ResponderCommand {
+        SetResponderUnavailableCommand, UpdateResponderCommand;
+
+        public static String getEventforStatus(boolean available, boolean enrolled){
+            if(!available && !enrolled)
+                return SetResponderUnavailableCommand.name();
+            else
+                return UpdateResponderCommand.name();
+        }
+
+    }
+
+    enum ResponderEvent {
+        ResponderSetUnavailableEvent, ResponderUpdatedEvent;
+
+        public static String getEventforStatus(boolean available, boolean enrolled){
+            if(!available && !enrolled)
+                return ResponderSetUnavailableEvent.name();
+            else
+                return ResponderUpdatedEvent.name();
+        }
+
+        }
+
+
+    String MISSION_MESSAGE_SOURCE ="emergency-response/mission-service";
+    String MISSION_CREATED_COMMAND="CreateMissionCommand";
+    enum MissionEvent {
         MissionStartedEvent, MissionPickedUpEvent, MissionCompletedEvent;
 
         public static String getEventforStatus(String missionStatus){

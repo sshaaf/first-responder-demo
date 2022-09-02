@@ -21,8 +21,8 @@ public class IncidentCommandMessage {
             return this;
         }
 
-        public String build(){
-            return incidentCommandMessage.toString();
+        public IncidentCommandMessage build(){
+            return incidentCommandMessage;
         }
     }
 

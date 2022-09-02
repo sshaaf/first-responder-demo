@@ -4,9 +4,12 @@ import io.smallrye.reactive.messaging.kafka.api.KafkaMetadataUtil;
 import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
 import org.cajun.navy.model.incident.Incident;
 import org.cajun.navy.model.incident.IncidentStatus;
+import org.cajun.navy.model.responder.Responder;
 import org.cajun.navy.service.message.MessageConfig;
 import org.cajun.navy.service.message.model.IncidentCommandMessage;
 import org.cajun.navy.service.message.model.MissionCommandMessage;
+import org.cajun.navy.service.message.model.ResponderLocationMessage;
+import org.cajun.navy.service.message.model.ResponderMessageCommand;
 import org.cajun.navy.service.model.Mission;
 import org.eclipse.microprofile.reactive.messaging.*;
 import io.cloudevents.CloudEvent;
@@ -54,7 +57,7 @@ public class MessageService {
         // IncidentCommandMessage is not the same as the incident, extract whats required
         String data = new IncidentCommandMessage.Builder(incident.getIncidentId())
                 .status(incident.getStatus().toString())
-                .build();
+                .build().toString();
 
         // The returned message will have the metadata added
         return decorateMessage(incident.getIncidentId(), INCIDENT_UPDATE_COMMAND, INCIDENT_MESSAGE_SOURCE, data);
@@ -76,6 +79,49 @@ public class MessageService {
     }
 
 
+    @Incoming("responder-event")
+    @Outgoing("responder-event-to-kafka")
+    public Message<CloudEvent> sendResponderEventToKafka(Responder responder) {
+
+        // converting to json for cloud event
+        String data = jsonb.toJson(responder);
+
+        // The returned message will have the metadata added
+        return decorateMessage(String.valueOf(responder.getId()), ResponderEvent.getEventforStatus(responder.isAvailable(), responder.isEnrolled()), RESPONDER_MESSAGE_SOURCE, data);
+    }
+
+    @Incoming("responder-command")
+    @Outgoing("responder-command-to-kafka")
+    public Message<CloudEvent> sendResponderCommandToKafka(Responder responder) {
+
+        ResponderMessageCommand message = new ResponderMessageCommand.Builder(responder.getId())
+                .name(responder.getName())
+                .phoneNumber(responder.getPhoneNumber())
+                .longitude(responder.getLongitude())
+                .latitude(responder.getLatitude())
+                .boatCapacity(responder.getBoatCapacity())
+                .medicalkit(responder.getMedicalKit())
+                .available(responder.isAvailable())
+                .build();
+
+        // The returned message will have the metadata added
+        return decorateMessage(String.valueOf(responder.getId()), ResponderCommand.getEventforStatus(responder.isAvailable(), responder.isEnrolled()) , RESPONDER_MESSAGE_SOURCE, message.toString());
+    }
+
+
+    @Incoming("responder-location")
+    @Outgoing("responder-location-to-kafka")
+    public Message<CloudEvent> sendResponderLocationEventToKafka(ResponderLocationMessage message) {
+
+        // converting to json for cloud event
+        String data = jsonb.toJson(message);
+
+        // The returned message will have the metadata added
+        return decorateMessage(message.incidentId, RESPONDER_LOCATION_UPDATED_EVENT, RESPONDER_MESSAGE_SOURCE, data);
+    }
+
+
+
 
     @Incoming("mission-command")
     @Outgoing("mission-command-to-kafka")
@@ -84,12 +130,12 @@ public class MessageService {
         // MissionCommandMessages are not the same as the mission object, extracing data for the command.
         MissionCommandMessage message = new MissionCommandMessage.Builder(mission.getIncidentId())
                 .responderId(mission.getResponderId())
-                .responderStartLongitude(mission.getResponderStartLon())
+                .responderStartLongitude(mission.getResponderStartLong())
                 .responderStartLatitude(mission.getResponderStartLat())
                 .incidentLatitude(mission.getIncidentLat())
-                .incidentLongitude(mission.getIncidentLon())
+                .incidentLongitude(mission.getIncidentLong())
                 .desitnationLatitude(mission.getDestinationLat())
-                .desitnationLongitude(mission.getDestinationLon())
+                .desitnationLongitude(mission.getDestinationLong())
                 .build();
 
         // converting to json for cloud event

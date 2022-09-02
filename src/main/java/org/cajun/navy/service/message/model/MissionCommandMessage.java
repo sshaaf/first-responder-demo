@@ -7,8 +7,6 @@ import java.math.BigDecimal;
 // "{\"incidentId\":\"1e8a4df3-f0dc-49ca-9b7f-03c8390c7df5\",\"responderId\":\"23\",\"responderStartLat\":34.23880,\"responderStartLong\":-77.81675,\"incidentLat\":34.23842,\"incidentLong\":-77.77396,\"destinationLat\":34.2461,\"destinationLong\":-77.9519,\"processId\":\"36\"}"
 public class MissionCommandMessage {
 
-    public String missionId;
-
     public String incidentId;
 
     public String responderId;

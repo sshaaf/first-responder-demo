@@ -16,15 +16,15 @@ public class Mission {
 
     private BigDecimal responderStartLat;
 
-    private BigDecimal responderStartLon;
+    private BigDecimal responderStartLong;
 
     private BigDecimal incidentLat;
 
-    private BigDecimal incidentLon;
+    private BigDecimal incidentLong;
 
     private BigDecimal destinationLat;
 
-    private BigDecimal destinationLon;
+    private BigDecimal destinationLong;
 
     private List<ResponderLocationHistory> responderLocationHistory;
 
@@ -71,12 +71,12 @@ public class Mission {
         this.responderStartLat = responderStartLat;
     }
 
-    public BigDecimal getResponderStartLon() {
-        return responderStartLon;
+    public BigDecimal getResponderStartLong() {
+        return responderStartLong;
     }
 
-    public void setResponderStartLon(BigDecimal responderStartLon) {
-        this.responderStartLon = responderStartLon;
+    public void setResponderStartLong(BigDecimal responderStartLong) {
+        this.responderStartLong = responderStartLong;
     }
 
     public BigDecimal getIncidentLat() {
@@ -87,12 +87,12 @@ public class Mission {
         this.incidentLat = incidentLat;
     }
 
-    public BigDecimal getIncidentLon() {
-        return incidentLon;
+    public BigDecimal getIncidentLong() {
+        return incidentLong;
     }
 
-    public void setIncidentLon(BigDecimal incidentLon) {
-        this.incidentLon = incidentLon;
+    public void setIncidentLong(BigDecimal incidentLong) {
+        this.incidentLong = incidentLong;
     }
 
     public BigDecimal getDestinationLat() {
@@ -103,12 +103,12 @@ public class Mission {
         this.destinationLat = destinationLat;
     }
 
-    public BigDecimal getDestinationLon() {
-        return destinationLon;
+    public BigDecimal getDestinationLong() {
+        return destinationLong;
     }
 
-    public void setDestinationLon(BigDecimal destinationLon) {
-        this.destinationLon = destinationLon;
+    public void setDestinationLong(BigDecimal destinationLong) {
+        this.destinationLong = destinationLong;
     }
 
     public List<ResponderLocationHistory> getResponderLocationHistory() {
@@ -153,7 +153,7 @@ public class Mission {
             return this;
         }
         public Builder responderStartLongitude(BigDecimal responderStartLongitude){
-            mission.responderStartLon = responderStartLongitude;
+            mission.responderStartLong = responderStartLongitude;
             return this;
         }
         public Builder incidentLatitude(BigDecimal incidentLatitude){
@@ -161,7 +161,7 @@ public class Mission {
             return this;
         }
         public Builder incidentLongitude(BigDecimal incidentLongitude){
-            mission.incidentLon = incidentLongitude;
+            mission.incidentLong = incidentLongitude;
             return this;
         }
         public Builder desitnationLatitude(BigDecimal desitnationLatitude){
@@ -169,7 +169,7 @@ public class Mission {
             return this;
         }
         public Builder desitnationLongitude(BigDecimal desitnationLongitude){
-            mission.destinationLon = desitnationLongitude;
+            mission.destinationLong = desitnationLongitude;
             return this;
         }
         public Builder responderLocationHistory(List<ResponderLocationHistory> responderLocationHistory){
