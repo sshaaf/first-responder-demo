@@ -1,5 +1,6 @@
 package org.cajun.navy.model.incident;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -21,6 +22,7 @@ public class Incident {
     @GeneratedValue(strategy = GenerationType.AUTO, generator="ReportedIncidentSeq")
     private long id;
 
+    @JsonbTransient
     @Column(name = "incident_id")
     private String incidentId;
 
@@ -43,6 +45,7 @@ public class Incident {
     private String victimPhoneNumber;
 
     @Basic
+    @JsonbTransient
     @Column(name = "reported_time")
     private Instant reportedTime;
 
