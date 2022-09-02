@@ -16,7 +16,7 @@
         "timestamp": 1661952424664
     }
 
-### IncidentUpdatedEvent
+### ASSIGNED
     HEADER: 81619974-9c61-4bf9-8b02-9e8af08a4132, ce_source: emergency-response/incident-service, ce_specversion: 1.0, ce_time: 2022-08-31T13:29:46.873347Z, ce_type: IncidentUpdatedEvent, content-type: application/json
     {
         "id": "7ed05cd2-7130-4849-9542-adc30e58e8c3",
@@ -31,7 +31,7 @@
     }
 
 
-### IncidentUpdatedEvent
+### RESCUED
     HEADER: 7f4d1884-e3eb-4be5-92ce-5015e07e228e, ce_source: emergency-response/incident-service, ce_specversion: 1.0, ce_time: 2022-08-31T13:32:06.879809Z, ce_type: IncidentUpdatedEvent, content-type: application/json
     {
         "id": "50c8555d-7df0-46a4-b929-7424bc032812",
@@ -74,15 +74,6 @@
 ### RESCUED
     HEADER: 1c8b-4a3a-b111-956dedcb0333, ce_incidentid: , ce_source: emergency-response/process-service, ce_specversion: 1.0, ce_time: 2022-08-31T13:28:21.239565Z, ce_type: UpdateIncidentCommand, content-type: application/json, id: fb156ea6-1c8b-4a3a-b111-956dedcb0333
     "{\"incident\":{\"id\":\"a6246742-6153-47cb-9fbf-d9fcc8bf5981\",\"status\":\"RESCUED\"}}"
-
-
-
-#topic-mission-command
-
-    HEADER: 752b-4e59-a230-f52da31129bd, ce_incidentid: , ce_source: emergency-response/process-service, ce_specversion: 1.0, ce_time: 2022-08-31T13:27:35.386639Z, ce_type: CreateMissionCommand, content-type: application/json, id: c4d84ba1-752b-4e59-a230-f52da31129bd
-    "{\"incidentId\":\"1e8a4df3-f0dc-49ca-9b7f-03c8390c7df5\",\"responderId\":\"23\",\"responderStartLat\":34.23880,\"responderStartLong\":-77.81675,\"incidentLat\":34.23842,\"incidentLong\":-77.77396,\"destinationLat\":34.2461,\"destinationLong\":-77.9519,\"processId\":\"36\"}"
-
-
 
 
 #topic-responder-command
@@ -148,6 +139,13 @@
         "human": false,
         "continue": true
     }
+
+
+
+#topic-mission-command
+
+    HEADER: 752b-4e59-a230-f52da31129bd, ce_incidentid: , ce_source: emergency-response/process-service, ce_specversion: 1.0, ce_time: 2022-08-31T13:27:35.386639Z, ce_type: CreateMissionCommand, content-type: application/json, id: c4d84ba1-752b-4e59-a230-f52da31129bd
+    "{\"incidentId\":\"1e8a4df3-f0dc-49ca-9b7f-03c8390c7df5\",\"responderId\":\"23\",\"responderStartLat\":34.23880,\"responderStartLong\":-77.81675,\"incidentLat\":34.23842,\"incidentLong\":-77.77396,\"destinationLat\":34.2461,\"destinationLong\":-77.9519,\"processId\":\"36\"}"
 
 
 #topic-mission-event

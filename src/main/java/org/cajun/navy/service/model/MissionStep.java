@@ -4,28 +4,28 @@ import java.math.BigDecimal;
 
 public class MissionStep {
 
-    private BigDecimal latitude;
+    private BigDecimal lat;
 
-    private BigDecimal longitude;
+    private BigDecimal lon;
 
     private boolean wayPoint = false;
 
     private boolean destination = false;
 
-    public BigDecimal getLatitude() {
-        return latitude;
+    public BigDecimal getLat() {
+        return lat;
     }
 
-    public void setLatitude(BigDecimal latitude) {
-        this.latitude = latitude;
+    public void setLat(BigDecimal lat) {
+        this.lat = lat;
     }
 
-    public BigDecimal getLongitude() {
-        return longitude;
+    public BigDecimal getLon() {
+        return lon;
     }
 
-    public void setLongitude(BigDecimal longitude) {
-        this.longitude = longitude;
+    public void setLon(BigDecimal lon) {
+        this.lon = lon;
     }
 
     public boolean isWayPoint() {
@@ -52,12 +52,12 @@ public class MissionStep {
         }
 
         public Builder latitude(BigDecimal latitude){
-            missionStep.latitude = latitude;
+            missionStep.lat = latitude;
             return this;
         }
 
         public Builder longitude(BigDecimal longitude) {
-            missionStep.longitude = longitude;
+            missionStep.lon = longitude;
             return this;
         }
 

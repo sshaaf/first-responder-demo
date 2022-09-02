@@ -26,8 +26,8 @@ public class IncidentServiceIT extends AbstractTestBase {
         String incidentId = "incidentId";
         Incident incident = new Incident();
         incident.setIncidentId(incidentId);
-        incident.setLatitude(BigDecimal.valueOf(34.214745));
-        incident.setLongitude(BigDecimal.valueOf(-77.9837161));
+        incident.setLat(BigDecimal.valueOf(34.214745));
+        incident.setLon(BigDecimal.valueOf(-77.9837161));
         incident.setMedicalNeeded(true);
         incident.setNumberOfPeople(3);
         incident.setVictimName("John Doe");

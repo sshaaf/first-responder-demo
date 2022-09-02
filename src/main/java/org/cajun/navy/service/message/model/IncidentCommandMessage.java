@@ -4,19 +4,30 @@ package org.cajun.navy.service.message.model;
 //{\"incident\":{\"id\":\"a6246742-6153-47cb-9fbf-d9fcc8bf5981\",\"status\":\"ASSIGNED\"}}
 public class IncidentCommandMessage {
 
-    private String id;
-    private String status;
+    public String id;
+    public String status;
 
-    public IncidentCommandMessage(String id, String status){
-        this.id = id;
-        this.status = status;
+    public static class Builder{
+
+        private IncidentCommandMessage incidentCommandMessage;
+
+        public Builder(String id){
+            incidentCommandMessage = new IncidentCommandMessage();
+            incidentCommandMessage.id = id;
+        }
+
+        public Builder status(String status){
+            incidentCommandMessage.status = status;
+            return this;
+        }
+
+        public String build(){
+            return incidentCommandMessage.toString();
+        }
     }
 
     @Override
     public String toString() {
-        return "Incident:{" +
-                "id:'" + id + '\'' +
-                ", status:'" + status + '\'' +
-                '}';
+        return "{\"incident\":{\"id\":\""+id+"\",\"status\":\""+status+"\"}}";
     }
 }

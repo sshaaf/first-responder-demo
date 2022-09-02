@@ -47,8 +47,13 @@ public class MissionService {
     IncidentService incidentService;
 
     @Inject
-    @Channel("mission")
-    Emitter<MissionEntity> missionEmitter;
+    @Channel("mission-event")
+    Emitter<Mission> missionEventEmitter;
+
+    @Inject
+    @Channel("mission-command")
+    Emitter<Mission> missionCommandEmitter;
+
 
     public List<Mission> findAll(){
         return missionDao
@@ -76,42 +81,46 @@ public class MissionService {
     }
 
     // Emit mission
-    public void fireEvent(MissionEntity mission){
-        missionEmitter.send(mission);
+    public void fireEvent(Mission mission){
+        missionEventEmitter.send(mission);
+
+        // as per the requirements, only send the command once mission is created.
+        if(mission.getStatus().equals(MissionStatus.CREATED.toString()))
+            missionCommandEmitter.send(mission);
     }
 
     @Transactional
     public void create(Incident incident){
 
-        MissionEntity mission = new MissionEntity();
-        mission.setStatus(MissionStatus.CREATED.toString());
+        MissionEntity missionEntity = new MissionEntity();
+        missionEntity.setStatus(MissionStatus.CREATED.toString());
 
         // Set incident id and location
-        mission.setIncidentId(incident.getIncidentId());
-        mission.setIncidentLatitude(incident.getLatitude());
-        mission.setIncidentLongtitude(incident.getLongitude());
+        missionEntity.setIncidentId(incident.getIncidentId());
+        missionEntity.setIncidentLatitude(incident.getLat());
+        missionEntity.setIncidentLongtitude(incident.getLon());
 
         // Set responders id and current location
         Responder responder = responderService.getFirstAvailableResponder();
-        mission.setResponderId(String.valueOf(responder.getId()));
-        mission.setResponderStartLatitude(responder.getLatitude());
-        mission.setResponderStartLongitude(responder.getLongitude());
+        missionEntity.setResponderId(String.valueOf(responder.getId()));
+        missionEntity.setResponderStartLatitude(responder.getLatitude());
+        missionEntity.setResponderStartLongitude(responder.getLongitude());
 
 
         // Set destination location
         Shelter shelter = disasterInfo.getRandomShelter();
-        mission.setDestinationLatitude(shelter.getLat());
-        mission.setDestinationLongtitude(shelter.getLon());
+        missionEntity.setDestinationLatitude(shelter.getLat());
+        missionEntity.setDestinationLongtitude(shelter.getLon());
 
         // Get directions for the mission
-        mission.setSteps(getAllSteps(mission.responderLocation(), shelter.shelterLocation(), mission.incidentLocation()));
+        missionEntity.setSteps(getAllSteps(missionEntity.responderLocation(), shelter.shelterLocation(), missionEntity.incidentLocation()));
 
 
-        missionDao.create(mission);
-        logger.info("Created new mission "+mission.getMissionId());
+        missionDao.create(missionEntity);
+        logger.info("Created new mission "+missionEntity.getMissionId());
 
         // fireEvent to Kafka
-        fireEvent(mission);
+        fireEvent(toMission(missionEntity));
     }
 
 
@@ -123,6 +132,8 @@ public class MissionService {
                 if (mission.getSteps().size() == mission.getResponderLocationHistory().size()) {
                     mission.setStatus(MissionStatus.COMPLETED.toString());
                     incidentService.updateStatus(IncidentStatus.RESCUED, mission.getIncidentId());
+                    // fireEvent to Kafka
+                    fireEvent(toMission(mission));
                 }
 
                 // if the mission was just created, we assume this is the first time to move and hence status is updated.
@@ -135,14 +146,15 @@ public class MissionService {
                     MissionStepEntity thisStep = mission.getSteps().get(mission.getResponderLocationHistory().size());
                     if(thisStep.isWayPoint()){
                         incidentService.updateStatus(IncidentStatus.PICKEDUP, mission.getIncidentId());
+                        // fireEvent to Kafka
+                        fireEvent(toMission(mission));
                     }
                     ResponderLocationHistoryEntity locationHistory = getNewLocation(thisStep);
                     mission.getResponderLocationHistory().add(locationHistory);
                     logger.info(mission.getMissionId()+": updating with new move "+locationHistory.getLatitude() +" , "+locationHistory.getLongitude());
                 }
                 missionDao.merge(mission);
-                // fireEvent to Kafka
-                fireEvent(mission);
+
             } else throw new IllegalArgumentException("Mission steps not found, check if the Routeplanner executed correctly.");
         }
         else throw new IllegalArgumentException("Cant do next move - Mission should not be null");

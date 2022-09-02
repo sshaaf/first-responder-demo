@@ -25,10 +25,10 @@ public class Incident {
     private String incidentId;
 
     @Column(name = "latitude", scale = 5, precision = 7)
-    private BigDecimal latitude;
+    private BigDecimal lat;
 
     @Column(name = "longitude", scale = 5, precision = 7)
-    private BigDecimal longitude;
+    private BigDecimal lon;
 
     @Column(name = "number_of_people")
     private int numberOfPeople;
@@ -65,20 +65,20 @@ public class Incident {
         this.incidentId = incidentId;
     }
 
-    public BigDecimal getLatitude() {
-        return latitude;
+    public BigDecimal getLat() {
+        return lat;
     }
 
-    public void setLatitude(BigDecimal latitude) {
-        this.latitude = latitude;
+    public void setLat(BigDecimal latitude) {
+        this.lat = latitude;
     }
 
-    public BigDecimal getLongitude() {
-        return longitude;
+    public BigDecimal getLon() {
+        return lon;
     }
 
-    public void setLongitude(BigDecimal longitude) {
-        this.longitude = longitude;
+    public void setLon(BigDecimal longitude) {
+        this.lon = longitude;
     }
 
     public Integer getNumberOfPeople() {

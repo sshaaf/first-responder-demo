@@ -4,26 +4,26 @@ import java.math.BigDecimal;
 
 public class ResponderLocationHistory {
 
-    private BigDecimal latitude;
+    private BigDecimal lat;
 
-    private BigDecimal longitude;
+    private BigDecimal lon;
 
     private long timestamp;
 
-    public BigDecimal getLatitude() {
-        return latitude;
+    public BigDecimal getLat() {
+        return lat;
     }
 
-    public void setLatitude(BigDecimal latitude) {
-        this.latitude = latitude;
+    public void setLat(BigDecimal lat) {
+        this.lat = lat;
     }
 
-    public BigDecimal getLongitude() {
-        return longitude;
+    public BigDecimal getLon() {
+        return lon;
     }
 
-    public void setLongitude(BigDecimal longitude) {
-        this.longitude = longitude;
+    public void setLon(BigDecimal lon) {
+        this.lon = lon;
     }
 
     public long getTimestamp() {
@@ -43,12 +43,12 @@ public class ResponderLocationHistory {
         }
 
         public Builder latitude(BigDecimal latitude){
-            responderLocaitonHistory.latitude = latitude;
+            responderLocaitonHistory.lat = latitude;
             return this;
         }
 
         public Builder longitude(BigDecimal longitude){
-            responderLocaitonHistory.longitude = longitude;
+            responderLocaitonHistory.lon = longitude;
             return this;
         }
 
