@@ -1,5 +1,6 @@
 package org.cajun.navy.model.responder;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -9,21 +10,21 @@ import java.util.Objects;
 @SequenceGenerator(name="ResponderSeq", sequenceName="responder_table_sequence", allocationSize = 10)
 @Table(name = "responder_table")
 @NamedQueries({
-        @NamedQuery(name = "Responder.allResponders", query = "SELECT r FROM Responder r"),
-        @NamedQuery(name = "Responder.findByName", query = "SELECT r FROM Responder r WHERE r.name = :name"),
-        @NamedQuery(name = "Responder.availableResponders", query = "SELECT r FROM Responder r WHERE r.available = true and r.enrolled = true"),
-        @NamedQuery(name = "Responder.availableRespondersOrderedByPerson", query = "SELECT r FROM Responder r WHERE r.available = true and r.enrolled = true ORDER BY r.person DESC NULLS LAST, r.id ASC"),
-        @NamedQuery(name = "Responder.persons", query = "SELECT r FROM Responder r where r.person = true"),
-        @NamedQuery(name = "Responder.nonPersons", query = "SELECT r from Responder r where r.person = false"),
-        @NamedQuery(name = "Responder.countEnrolled", query = "SELECT COUNT(r.id) FROM Responder r WHERE r.enrolled = true"),
-        @NamedQuery(name = "Responder.countActive", query = "SELECT COUNT(r.id) FROM Responder r WHERE r.enrolled = true AND r.available = false"),
-        @NamedQuery(name = "Responder.deleteAll", query = "DELETE FROM Responder"),
-        @NamedQuery(name = "Responder.deleteNonPersons", query = "DELETE FROM Responder r where r.person = false"),
-        @NamedQuery(name = "Responder.clearNonPersons", query = "UPDATE Responder r SET r.available = false, r.enrolled = false WHERE r.person = false"),
-        @NamedQuery(name = "Responder.reset", query = "UPDATE Responder r SET r.available = true, r.enrolled = false WHERE r.person = false"),
-        @NamedQuery(name = "Responder.resetPerson", query = "UPDATE Responder r SET r.available = true, r.enrolled = false, latitude = null,  longitude = null WHERE r.person = true")
+        @NamedQuery(name = "Responder.allResponders", query = "SELECT r FROM ResponderEntity r"),
+        @NamedQuery(name = "Responder.findByName", query = "SELECT r FROM ResponderEntity r WHERE r.name = :name"),
+        @NamedQuery(name = "Responder.availableResponders", query = "SELECT r FROM ResponderEntity r WHERE r.available = true and r.enrolled = true"),
+        @NamedQuery(name = "Responder.availableRespondersOrderedByPerson", query = "SELECT r FROM ResponderEntity r WHERE r.available = true and r.enrolled = true ORDER BY r.person DESC NULLS LAST, r.id ASC"),
+        @NamedQuery(name = "Responder.persons", query = "SELECT r FROM ResponderEntity r where r.person = true"),
+        @NamedQuery(name = "Responder.nonPersons", query = "SELECT r from ResponderEntity r where r.person = false"),
+        @NamedQuery(name = "Responder.countEnrolled", query = "SELECT COUNT(r.id) FROM ResponderEntity r WHERE r.enrolled = true"),
+        @NamedQuery(name = "Responder.countActive", query = "SELECT COUNT(r.id) FROM ResponderEntity r WHERE r.enrolled = true AND r.available = false"),
+        @NamedQuery(name = "Responder.deleteAll", query = "DELETE FROM ResponderEntity"),
+        @NamedQuery(name = "Responder.deleteNonPersons", query = "DELETE FROM ResponderEntity r where r.person = false"),
+        @NamedQuery(name = "Responder.clearNonPersons", query = "UPDATE ResponderEntity r SET r.available = false, r.enrolled = false WHERE r.person = false"),
+        @NamedQuery(name = "Responder.reset", query = "UPDATE ResponderEntity r SET r.available = true, r.enrolled = false WHERE r.person = false"),
+        @NamedQuery(name = "Responder.resetPerson", query = "UPDATE ResponderEntity r SET r.available = true, r.enrolled = false, latitude = null,  longitude = null WHERE r.person = true")
 })
-public class Responder {
+public class ResponderEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="ResponderSeq")
@@ -57,6 +58,7 @@ public class Responder {
     @Column(name = "enrolled")
     private Boolean enrolled;
 
+    @JsonbTransient
     @Column(name = "version")
     @Version
     private long version;
@@ -155,7 +157,7 @@ public class Responder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Responder responder = (Responder) o;
+        ResponderEntity responder = (ResponderEntity) o;
 
         if (!(id ==responder.id)) return false;
         if (!Objects.equals(name, responder.name)) return false;
@@ -180,6 +182,77 @@ public class Responder {
         result = 31 * result + (medicalKit != null ? medicalKit.hashCode() : 0);
         result = 31 * result + (available != null ? available.hashCode() : 0);
         return result;
+    }
+
+
+    public static class Builder {
+
+        private final ResponderEntity responder;
+
+        public Builder() {
+            this.responder = new ResponderEntity();
+        }
+
+        public Builder(long id) {
+            this.responder = new ResponderEntity();
+            responder.id = id;
+        }
+
+        public Builder(long id, long version) {
+            this.responder = new ResponderEntity();
+            responder.id = id;
+            responder.version = version;
+        }
+
+        public Builder name(String name) {
+            responder.name = name;
+            return this;
+        }
+
+        public Builder phoneNumber(String phoneNumber) {
+            responder.phoneNumber = phoneNumber;
+            return this;
+        }
+
+        public Builder latitude(BigDecimal latitude) {
+            responder.latitude = latitude;
+            return this;
+        }
+
+        public Builder longitude(BigDecimal longitude) {
+            responder.longitude = longitude;
+            return this;
+        }
+
+        public Builder boatCapacity(Integer boatCapacity) {
+            responder.boatCapacity = boatCapacity;
+            return this;
+        }
+
+        public Builder medicalKit(Boolean medicalKit) {
+            responder.medicalKit = medicalKit;
+            return this;
+        }
+
+        public Builder available(Boolean available) {
+            responder.available = available;
+            return this;
+        }
+
+        public Builder person(Boolean person) {
+            responder.person = person;
+            return this;
+        }
+
+        public Builder enrolled(Boolean enrolled) {
+            responder.enrolled = enrolled;
+            return this;
+        }
+
+        public ResponderEntity build() {
+            return responder;
+        }
+
     }
 
 }

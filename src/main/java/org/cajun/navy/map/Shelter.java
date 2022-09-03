@@ -8,24 +8,13 @@ public class Shelter {
     private String id;
     private String name;
 
-    private BigDecimal longitude;
+    private BigDecimal lon;
 
-    private BigDecimal latitude;
+    private BigDecimal lat;
 
     private int rescued;
 
     protected Shelter() {
-    }
-
-    public static Shelter from(String id, String name, BigDecimal lon, BigDecimal lat, int rescued) {
-        Shelter shelter = new Shelter();
-        shelter.id = id;
-        shelter.name = name;
-        shelter.longitude = lon;
-        shelter.latitude = lat;
-        shelter.rescued = rescued;
-
-        return shelter;
     }
 
     public String getId() {
@@ -44,20 +33,20 @@ public class Shelter {
         this.name = name;
     }
 
-    public BigDecimal getLongitude() {
-        return this.longitude;
+    public BigDecimal getLon() {
+        return this.lon;
     }
 
-    public void setLongitude(BigDecimal longitude) {
-        this.longitude = longitude;
+    public void setLon(BigDecimal lon) {
+        this.lon = lon;
     }
 
-    public BigDecimal getLatitude() {
-        return this.latitude;
+    public BigDecimal getLat() {
+        return this.lat;
     }
 
-    public void setLatitude(BigDecimal latitude) {
-        this.latitude = latitude;
+    public void setLat(BigDecimal lat) {
+        this.lat = lat;
     }
 
     public int getRescued() {
@@ -69,7 +58,7 @@ public class Shelter {
     }
 
     public Location shelterLocation() {
-        return Location.of(latitude, longitude);
+        return Location.of(lat, lon);
     }
 
 }

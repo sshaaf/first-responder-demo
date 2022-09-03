@@ -1,7 +1,8 @@
 package org.cajun.navy.resource;
 
-import org.cajun.navy.model.mission.Mission;
+import org.cajun.navy.model.mission.MissionEntity;
 import org.cajun.navy.service.MissionService;
+import org.cajun.navy.service.model.Mission;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -9,7 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/missions")
+@Path("/api/missions")
 @RequestScoped
 public class MissionResource {
 
@@ -19,7 +20,7 @@ public class MissionResource {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response allMissions(String incident) {
+    public Response allMissions() {
         return Response.status(Response.Status.ACCEPTED).entity(service.findAll()).build();
     }
 
@@ -34,8 +35,8 @@ public class MissionResource {
     @GET
     @Path("responders/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response missionByResponderId(@PathParam("id") String missionId) {
-        Mission item = service.findByMissionId(missionId);
+    public Response missionByResponderId(@PathParam("id") String responderId) {
+        Mission item = service.findByMissionId(responderId);
         if(item == null){
             return Response.status(Response.Status.NO_CONTENT).build();
         }

@@ -5,17 +5,21 @@ import java.util.List;
 
 public interface MissionDao {
 
-    Mission create(Mission mission);
+    MissionEntity create(MissionEntity mission);
 
-    List<Mission> findAll();
+    List<MissionEntity> findAll();
 
-    Mission findByMissionId(String missionId);
+    MissionEntity findByMissionId(String missionId);
 
-    List<Mission> findByStatus(String status);
+    List<MissionEntity> findByStatus(String status);
 
-    List<Mission>  getByResponder(String responderId);
+    List<MissionEntity>  getByResponder(String responderId);
 
-    List<Mission> getCreatedAndUpdated();
+    List<MissionEntity> getCreatedAndUpdated();
 
-    Mission merge(Mission mission);
+    List<ResponderLocationHistoryEntity> getResponderLocationHistoryByMission(String missionId);
+
+    List<MissionStepEntity> getMissionStepsByMission(String missionId);
+
+    MissionEntity merge(MissionEntity mission);
 }

@@ -6,7 +6,7 @@ import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.RouteLeg;
 import com.mapbox.geojson.Point;
 import org.cajun.navy.model.mission.Location;
-import org.cajun.navy.model.mission.MissionStep;
+import org.cajun.navy.model.mission.MissionStepEntity;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import retrofit2.Response;
 
@@ -31,9 +31,9 @@ public class RoutePlanner {
     @ConfigProperty(name = "mapbox.token")
     private String MAPBOX_ACCESS_TOKEN;
 
-    public List<MissionStep> getDirections(Location origin, Location destination, Location waypoint) {
+    public List<MissionStepEntity> getDirections(Location origin, Location destination, Location waypoint) {
         try {
-            List<MissionStep> missionSteps = new ArrayList<>();
+            List<MissionStepEntity> missionSteps = new ArrayList<>();
             Response<DirectionsResponse> response = callMapBoxAPI(DirectionsCriteria.PROFILE_DRIVING, origin, destination, waypoint);
 
             if (response.body() == null || response.body().routes().isEmpty()) {
@@ -41,11 +41,11 @@ public class RoutePlanner {
                 response = callMapBoxAPI(DirectionsCriteria.PROFILE_CYCLING, origin, destination, waypoint);
                 if (response.body() == null || response.body().routes().isEmpty()) {
                     logger.warning("No routes found with profile driving or cycling. Returning minimal mission steps array");
-                    missionSteps.add(MissionStep.builder(origin.getLatitude().setScale(4, RoundingMode.HALF_UP),
+                    missionSteps.add(MissionStepEntity.builder(origin.getLatitude().setScale(4, RoundingMode.HALF_UP),
                             origin.getLongitude().setScale(4, RoundingMode.HALF_UP)).build());
-                    missionSteps.add(MissionStep.builder(waypoint.getLatitude().setScale(4, RoundingMode.HALF_UP),
+                    missionSteps.add(MissionStepEntity.builder(waypoint.getLatitude().setScale(4, RoundingMode.HALF_UP),
                             waypoint.getLongitude().setScale(4, RoundingMode.HALF_UP)).wayPoint(true).build());
-                    missionSteps.add(MissionStep.builder(destination.getLatitude().setScale(4, RoundingMode.HALF_UP),
+                    missionSteps.add(MissionStepEntity.builder(destination.getLatitude().setScale(4, RoundingMode.HALF_UP),
                             destination.getLongitude().setScale(4, RoundingMode.HALF_UP)).destination(true).build());
                     return missionSteps;
                 }
@@ -55,10 +55,10 @@ public class RoutePlanner {
             legs.orElse(Collections.emptyList()).stream().flatMap(r -> Optional.ofNullable(r.steps()).orElse(Collections.emptyList()).stream())
                     .map(l -> {
                         Point p = l.maneuver().location();
-                        MissionStep.Builder builder = MissionStep.builder(BigDecimal.valueOf(p.latitude()).setScale(4, RoundingMode.HALF_UP),
+                        MissionStepEntity.Builder builder = MissionStepEntity.builder(BigDecimal.valueOf(p.latitude()).setScale(4, RoundingMode.HALF_UP),
                                 BigDecimal.valueOf(p.longitude()).setScale(4, RoundingMode.HALF_UP));
                         if ("arrive".equalsIgnoreCase(l.maneuver().type())) {
-                            Optional<MissionStep> step = missionSteps.stream().filter(MissionStep::isWayPoint).findFirst();
+                            Optional<MissionStepEntity> step = missionSteps.stream().filter(MissionStepEntity::isWayPoint).findFirst();
                             if (step.isEmpty()) {
                                 builder.wayPoint(true);
                             } else {

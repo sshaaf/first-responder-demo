@@ -4,17 +4,17 @@ import java.util.List;
 
 
 public interface IncidentDao {
-    Incident create(Incident incident);
+    IncidentEntity create(IncidentEntity incident);
 
-    List<Incident> findAll();
+    List<IncidentEntity> findAll();
 
-    Incident findByIncidentId(String incidentId);
+    IncidentEntity findByIncidentId(String incidentId);
 
-    Incident merge(Incident incident);
+    IncidentEntity merge(IncidentEntity incident);
 
-    List<Incident> findByStatus(String status);
+    List<IncidentEntity> findByStatus(String status);
 
-    List<Incident> findByName(String pattern);
+    List<IncidentEntity> findByName(String pattern);
 
     void deleteAll();
 }

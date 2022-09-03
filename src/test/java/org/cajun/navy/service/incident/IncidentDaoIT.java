@@ -20,9 +20,8 @@ import java.math.BigDecimal;
 import java.util.UUID;
 import javax.inject.Inject;
 
-import org.cajun.navy.model.incident.Incident;
+import org.cajun.navy.model.incident.IncidentEntity;
 import org.cajun.navy.model.incident.IncidentDao;
-import org.cajun.navy.model.incident.IncidentDaoImpl;
 import org.cajun.navy.model.incident.IncidentStatus;
 import org.cajun.navy.service.AbstractTestBase;
 import org.junit.Assert;
@@ -47,15 +46,15 @@ public class IncidentDaoIT extends AbstractTestBase {
 
     @Test
     public void createIncident() {
-        Incident incident = new Incident();
-        incident.setLatitude(BigDecimal.valueOf(34.214745));
-        incident.setLongitude(BigDecimal.valueOf(-77.9837161));
+        IncidentEntity incident = new IncidentEntity();
+        incident.setLat(BigDecimal.valueOf(34.214745));
+        incident.setLon(BigDecimal.valueOf(-77.9837161));
         incident.setMedicalNeeded(true);
         incident.setNumberOfPeople(3);
         incident.setVictimName("John Doe");
         incident.setVictimPhoneNumber("(123) 456-7890");
 
-        Incident created = dao.create(incident);
+        IncidentEntity created = dao.create(incident);
         Assert.assertNotNull(created.getId());
         Assert.assertNotNull(created.getIncidentId());
         Assert.assertNotNull(created.getReportedTime());

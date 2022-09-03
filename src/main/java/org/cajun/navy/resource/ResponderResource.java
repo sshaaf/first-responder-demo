@@ -1,7 +1,7 @@
 package org.cajun.navy.resource;
 
-import org.cajun.navy.model.responder.Responder;
 import org.cajun.navy.service.ResponderService;
+import org.cajun.navy.service.model.Responder;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-@Path("/responders/")
+@Path("/responder-service/")
 @RequestScoped
 public class ResponderResource {
 
@@ -24,7 +24,7 @@ public class ResponderResource {
         @Path("stats")
         @Produces(MediaType.APPLICATION_JSON)
         public Response stats() {
-                return Response.ok(service.activeRespondersCount()).build();
+                return Response.ok(service.getResponderStats()).build();
         }
 
         @GET
@@ -71,6 +71,7 @@ public class ResponderResource {
 
         @GET
         @Produces(MediaType.APPLICATION_JSON)
+        @Path("/responders")
         public Response allResponders(@QueryParam("limit") Optional<Integer> limit, @QueryParam("offset") Optional<Integer> offset) {
                 List<Responder> responders;
                 if (limit.isPresent()) {
@@ -108,6 +109,14 @@ public class ResponderResource {
         public Response createResponder(Responder responder) throws URISyntaxException {
                 Responder created = service.create(responder);
                 return Response.created(new URI("/responder/" + created.getId())).build();
+        }
+
+        @POST
+        @Path("/responders")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public Response createResponders(List<Responder> responders) {
+                service.createResponders(responders);
+                return Response.status(Response.Status.CREATED).build();
         }
 
         @PUT

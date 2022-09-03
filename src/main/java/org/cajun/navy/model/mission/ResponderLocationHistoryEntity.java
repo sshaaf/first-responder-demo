@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 @Entity
 @Access(AccessType.FIELD)
 @Table(name = "responder_location_history")
-public class ResponderLocationHistory {
+public class ResponderLocationHistoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,16 +23,16 @@ public class ResponderLocationHistory {
 
     @ManyToOne
     @JoinColumn(name = "mission_id", insertable = false, updatable = false)
-    private Mission mission;
+    private MissionEntity mission;
 
 
-    public ResponderLocationHistory(BigDecimal latitude, BigDecimal longitude, long timestamp) {
+    public ResponderLocationHistoryEntity(BigDecimal latitude, BigDecimal longitude, long timestamp) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.timestamp = timestamp;
     }
 
-    public ResponderLocationHistory() {
+    public ResponderLocationHistoryEntity() {
 
     }
 
@@ -48,20 +48,20 @@ public class ResponderLocationHistory {
         return timestamp;
     }
 
-    public static ResponderLocationHistory.Builder builder(BigDecimal lat, BigDecimal lon) {
-        return new ResponderLocationHistory.Builder(lat, lon);
+    public static ResponderLocationHistoryEntity.Builder builder(BigDecimal lat, BigDecimal lon) {
+        return new ResponderLocationHistoryEntity.Builder(lat, lon);
     }
 
     public static class Builder {
 
-        private final ResponderLocationHistory history = new ResponderLocationHistory();
+        private final ResponderLocationHistoryEntity history = new ResponderLocationHistoryEntity();
 
         public Builder(BigDecimal latitude, BigDecimal longitude) {
             history.latitude = latitude;
             history.longitude = longitude;
         }
 
-        public ResponderLocationHistory build() {
+        public ResponderLocationHistoryEntity build() {
             return history;
         }
     }

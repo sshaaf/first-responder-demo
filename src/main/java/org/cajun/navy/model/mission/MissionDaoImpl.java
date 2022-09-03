@@ -12,22 +12,36 @@ public class MissionDaoImpl implements MissionDao{
 
     @Override
     @Transactional
-    public Mission create(Mission mission) {
+    public MissionEntity create(MissionEntity mission) {
         entityManager.persist(mission);
         return mission;
     }
 
     @Override
-    public List<Mission> findAll() {
-        return entityManager.createNamedQuery("Mission.findAll", Mission.class).getResultList();
+    public List<MissionEntity> findAll() {
+        return entityManager.createNamedQuery("Mission.findAll", MissionEntity.class).getResultList();
     }
 
     @Override
-    public Mission findByMissionId(String missionId) {
+    public List<ResponderLocationHistoryEntity> getResponderLocationHistoryByMission(String missionId) {
+        return entityManager.createNamedQuery("Mission.findResponderLocationHistory", ResponderLocationHistoryEntity.class)
+                .setParameter("missionId", missionId)
+                .getResultList();
+    }
+
+    @Override
+    public List<MissionStepEntity> getMissionStepsByMission(String missionId) {
+        return entityManager.createNamedQuery("Mission.findMissionSteps", MissionStepEntity.class)
+                .setParameter("missionId", missionId)
+                .getResultList();
+    }
+
+    @Override
+    public MissionEntity findByMissionId(String missionId) {
         if(missionId == null || missionId.isEmpty())
             return null;
         else {
-            List<Mission> missions = entityManager.createNamedQuery("Mission.byMissionId", Mission.class)
+            List<MissionEntity> missions = entityManager.createNamedQuery("Mission.byMissionId", MissionEntity.class)
                     .setParameter("missionId", missionId)
                     .getResultList();
             if(missions.isEmpty())
@@ -37,28 +51,28 @@ public class MissionDaoImpl implements MissionDao{
     }
 
     @Override
-    public List<Mission> findByStatus(String status) {
-        return entityManager.createNamedQuery("Mission.byStatus", Mission.class)
+    public List<MissionEntity> findByStatus(String status) {
+        return entityManager.createNamedQuery("Mission.byStatus", MissionEntity.class)
                 .setParameter("status", status.toUpperCase()).getResultList();
     }
 
 
     @Override
-    public List<Mission> getByResponder(String responderId) {
-        return entityManager.createNamedQuery("Mission.byResponderId", Mission.class)
+    public List<MissionEntity> getByResponder(String responderId) {
+        return entityManager.createNamedQuery("Mission.byResponderId", MissionEntity.class)
                 .setParameter("responderId", responderId).getResultList();
 
     }
 
     @Override
-    public List<Mission> getCreatedAndUpdated(){
-        return entityManager.createNamedQuery("Mission.byCreateOrUpdated", Mission.class).getResultList();
+    public List<MissionEntity> getCreatedAndUpdated(){
+        return entityManager.createNamedQuery("Mission.byCreateOrUpdated", MissionEntity.class).getResultList();
     }
 
     @Override
     @Transactional
-    public Mission merge(Mission mission) {
-        Mission m = entityManager.merge(mission);
+    public MissionEntity merge(MissionEntity mission) {
+        MissionEntity m = entityManager.merge(mission);
         entityManager.flush();
         return m;
     }

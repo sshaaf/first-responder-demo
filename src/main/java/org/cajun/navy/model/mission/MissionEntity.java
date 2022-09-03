@@ -2,23 +2,22 @@ package org.cajun.navy.model.mission;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Access(AccessType.FIELD)
 @Table(name = "mission_table")
 @NamedQueries({
-        @NamedQuery(name = "Mission.findAll", query = "SELECT m from Mission m"),
-        @NamedQuery(name = "Mission.byMissionId", query = "SELECT m FROM Mission m WHERE m.missionId = :missionId"),
-        @NamedQuery(name = "Mission.byStatus", query = "SELECT m from Mission m WHERE m.status = :status"),
-        @NamedQuery(name = "Mission.byCreateOrUpdated", query = "SELECT m from Mission m WHERE m.status = 'CREATED' OR m.status = 'UPDATED'"),
-        @NamedQuery(name = "Mission.byResponderId", query = "SELECT m from Mission m WHERE m.responderId = :responderId"),
+        @NamedQuery(name = "Mission.findAll", query = "SELECT m from MissionEntity m"),
+        @NamedQuery(name = "Mission.findMissionSteps", query = "SELECT m from MissionStepEntity m where m.mission.missionId = :missionId"),
+        @NamedQuery(name = "Mission.findResponderLocationHistory", query = "SELECT m from ResponderLocationHistoryEntity m where m.mission.missionId = :missionId"),
+        @NamedQuery(name = "Mission.byMissionId", query = "SELECT m FROM MissionEntity m WHERE m.missionId = :missionId"),
+        @NamedQuery(name = "Mission.byStatus", query = "SELECT m from MissionEntity m WHERE m.status = :status"),
+        @NamedQuery(name = "Mission.byCreateOrUpdated", query = "SELECT m from MissionEntity m WHERE m.status = 'CREATED' OR m.status = 'UPDATED'"),
+        @NamedQuery(name = "Mission.byResponderId", query = "SELECT m from MissionEntity m WHERE m.responderId = :responderId"),
 })
 
-public class Mission {
+public class MissionEntity {
 
     @Id
     @Column(name = "mission_id")
@@ -53,16 +52,16 @@ public class Mission {
 
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "mission_id")
-    private List<ResponderLocationHistory> responderLocationHistory;
+    private List<ResponderLocationHistoryEntity> responderLocationHistory;
 
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "mission_id")
-    private List<MissionStep> steps;
+    private List<MissionStepEntity> steps;
 
-    public Mission() {
+    public MissionEntity() {
         missionId = UUID.randomUUID().toString();
-        responderLocationHistory = new ArrayList<>();
-        steps = new ArrayList<>();
+        responderLocationHistory = new ArrayList<ResponderLocationHistoryEntity>();
+        steps = new ArrayList<MissionStepEntity>();
     }
 
     public String getMissionId() {
@@ -101,7 +100,7 @@ public class Mission {
         return destinationLongtitude;
     }
 
-    public List<ResponderLocationHistory> getResponderLocationHistory() {
+    public List<ResponderLocationHistoryEntity> getResponderLocationHistory() {
         return responderLocationHistory;
     }
 
@@ -150,20 +149,20 @@ public class Mission {
         this.status = status;
     }
 
-    public void setResponderLocationHistory(List<ResponderLocationHistory> responderLocationHistory) {
+    public void setResponderLocationHistory(List<ResponderLocationHistoryEntity> responderLocationHistory) {
         this.responderLocationHistory = responderLocationHistory;
     }
 
-    public void setSteps(List<MissionStep> steps) {
+    public void setSteps(List<MissionStepEntity> steps) {
         this.steps = steps;
     }
 
-    public Mission status(MissionStatus status) {
+    public MissionEntity status(MissionStatus status) {
         this.status = status.name();
         return this;
     }
 
-    public List<MissionStep> getSteps() {
+    public List<MissionStepEntity> getSteps() {
         return steps;
     }
 
@@ -184,7 +183,7 @@ public class Mission {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Mission mission = (Mission) o;
+        MissionEntity mission = (MissionEntity) o;
         return Objects.equals(responderId, mission.responderId) && Objects.equals(incidentId, mission.incidentId);
     }
 
@@ -197,4 +196,7 @@ public class Mission {
     public int hashCode() {
         return Objects.hash(getKey());
     }
+
+
+
 }

@@ -257,6 +257,17 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Cloud Events Core API-->
+        <dependency>
+            <groupId>io.cloudevents</groupId>
+            <artifactId>cloudevents-core</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.cloudevents</groupId>
+            <artifactId>cloudevents-kafka</artifactId>
+            <version>2.3.0</version>
+        </dependency>
         <!-- Testing -->
         <dependency>
             <groupId>junit</groupId>
@@ -445,7 +456,8 @@
                                         db = new org.testcontainers.containers.PostgreSQLContainer("postgres:latest")
                                                 .withDatabaseName("${frdemo.dbname}")
                                                 .withUsername("${frdemo.dbuser}")
-                                                .withPassword("${frdemo.dbpass}")
+                                                .withPass
+                                        word("${frdemo.dbpass}")
                                         db.start()
                                         project.properties.setProperty('jdbc.url', db.getJdbcUrl())
                                         println ("\n\n\n\n\njdbc.url = " + db.getJdbcUrl())

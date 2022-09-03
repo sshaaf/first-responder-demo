@@ -15,20 +15,20 @@ public class ResponderDaoImpl implements ResponderDao {
 
     @Override
     @Transactional
-    public Responder create(Responder responder) {
+    public ResponderEntity create(ResponderEntity responder) {
         entityManager.persist(responder);
         return responder;
     }
 
     @Override
     @Transactional
-    public Responder findById(long id) {
-        return entityManager.find(Responder.class, id, LockModeType.OPTIMISTIC);
+    public ResponderEntity findById(long id) {
+        return entityManager.find(ResponderEntity.class, id, LockModeType.OPTIMISTIC);
     }
 
     @Override
-    public Responder findByName(String name) {
-        List<Responder> results = entityManager.createNamedQuery("Responder.findByName", Responder.class)
+    public ResponderEntity findByName(String name) {
+        List<ResponderEntity> results = entityManager.createNamedQuery("Responder.findByName", ResponderEntity.class)
                 .setParameter("name", name).getResultList();
         if (results.isEmpty()) {
             return null;
@@ -41,9 +41,9 @@ public class ResponderDaoImpl implements ResponderDao {
 
     @Override
     @Transactional
-    public Responder update(Responder responder) {
+    public ResponderEntity update(ResponderEntity responder) {
 
-        Responder toUpdate = findById(responder.getId());
+        ResponderEntity toUpdate = findById(responder.getId());
         if (toUpdate == null) {
             return null;
         }
@@ -55,14 +55,14 @@ public class ResponderDaoImpl implements ResponderDao {
     }
 
     @Override
-    public List<Responder> availableResponders() {
-        return entityManager.createNamedQuery("Responder.availableResponders", Responder.class)
+    public List<ResponderEntity> availableResponders() {
+        return entityManager.createNamedQuery("Responder.availableResponders", ResponderEntity.class)
                 .getResultList();
     }
 
     @Override
-    public List<Responder> availableResponders(int limit, int offset) {
-        TypedQuery<Responder> q = entityManager.createNamedQuery("Responder.availableRespondersOrderedByPerson", Responder.class);
+    public List<ResponderEntity> availableResponders(int limit, int offset) {
+        TypedQuery<ResponderEntity> q = entityManager.createNamedQuery("Responder.availableRespondersOrderedByPerson", ResponderEntity.class);
         if (limit > 0 && offset >= 0) {
             q.setMaxResults(limit);
             q.setFirstResult(offset);
@@ -71,13 +71,13 @@ public class ResponderDaoImpl implements ResponderDao {
     }
 
     @Override
-    public List<Responder> allResponders() {
-        return entityManager.createNamedQuery("Responder.allResponders", Responder.class).getResultList();
+    public List<ResponderEntity> allResponders() {
+        return entityManager.createNamedQuery("Responder.allResponders", ResponderEntity.class).getResultList();
     }
 
     @Override
-    public List<Responder> allResponders(int limit, int offset) {
-        TypedQuery<Responder> q = entityManager.createNamedQuery("Responder.allResponders", Responder.class);
+    public List<ResponderEntity> allResponders(int limit, int offset) {
+        TypedQuery<ResponderEntity> q = entityManager.createNamedQuery("Responder.allResponders", ResponderEntity.class);
         if (limit > 0 && offset >= 0) {
             q.setMaxResults(limit);
             q.setFirstResult(offset);
@@ -86,13 +86,13 @@ public class ResponderDaoImpl implements ResponderDao {
     }
 
     @Override
-    public List<Responder> personResponders() {
-        return entityManager.createNamedQuery("Responder.persons", Responder.class).getResultList();
+    public List<ResponderEntity> personResponders() {
+        return entityManager.createNamedQuery("Responder.persons", ResponderEntity.class).getResultList();
     }
 
     @Override
-    public List<Responder> personResponders(int limit, int offset) {
-        TypedQuery<Responder> q = entityManager.createNamedQuery("Responder.persons", Responder.class);
+    public List<ResponderEntity> personResponders(int limit, int offset) {
+        TypedQuery<ResponderEntity> q = entityManager.createNamedQuery("Responder.persons", ResponderEntity.class);
         if (limit > 0 && offset >= 0) {
             q.setMaxResults(limit);
             q.setFirstResult(offset);
@@ -101,8 +101,8 @@ public class ResponderDaoImpl implements ResponderDao {
     }
 
     @Override
-    public List<Responder> nonPersonResponders() {
-        return entityManager.createNamedQuery("Responder.nonPersons", Responder.class).getResultList();
+    public List<ResponderEntity> nonPersonResponders() {
+        return entityManager.createNamedQuery("Responder.nonPersons", ResponderEntity.class).getResultList();
     }
 
     @Override
