@@ -17,7 +17,7 @@ public class IncidentDaoImpl implements IncidentDao {
 
     @Override
     @Transactional
-    public Incident create(Incident incident) {
+    public IncidentEntity create(IncidentEntity incident) {
         String incidentId = UUID.randomUUID().toString();
         long reportedTimestamp = System.currentTimeMillis();
 
@@ -29,16 +29,16 @@ public class IncidentDaoImpl implements IncidentDao {
     }
 
     @Override
-    public List<Incident> findAll() {
-        return entityManager.createNamedQuery("Incident.findAll", Incident.class).getResultList();
+    public List<IncidentEntity> findAll() {
+        return entityManager.createNamedQuery("Incident.findAll", IncidentEntity.class).getResultList();
     }
 
     @Override
-    public Incident findByIncidentId(String incidentId) {
+    public IncidentEntity findByIncidentId(String incidentId) {
         if (incidentId == null || incidentId.isEmpty()) {
             return null;
         }
-        List<Incident> incidents = entityManager.createNamedQuery("Incident.byIncidentId", Incident.class)
+        List<IncidentEntity> incidents = entityManager.createNamedQuery("Incident.byIncidentId", IncidentEntity.class)
                 .setParameter("incidentId", incidentId)
                 .getResultList();
         if (incidents.isEmpty()) {
@@ -49,21 +49,21 @@ public class IncidentDaoImpl implements IncidentDao {
 
     @Override
     @Transactional
-    public Incident merge(Incident incident) {
-        Incident r = entityManager.merge(incident);
+    public IncidentEntity merge(IncidentEntity incident) {
+        IncidentEntity r = entityManager.merge(incident);
         entityManager.flush();
         return r;
     }
 
     @Override
-    public List<Incident> findByStatus(String status) {
-        return entityManager.createNamedQuery("Incident.byStatus", Incident.class)
+    public List<IncidentEntity> findByStatus(String status) {
+        return entityManager.createNamedQuery("Incident.byStatus", IncidentEntity.class)
                 .setParameter("status", status.toUpperCase()).getResultList();
     }
 
     @Override
-    public List<Incident> findByName(String pattern) {
-        return entityManager.createNamedQuery("Incident.findByName", Incident.class)
+    public List<IncidentEntity> findByName(String pattern) {
+        return entityManager.createNamedQuery("Incident.findByName", IncidentEntity.class)
                 .setParameter("pattern", pattern.toLowerCase()).getResultList();
     }
 

@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import javax.inject.Inject;
 
-import org.cajun.navy.model.incident.Incident;
 import org.cajun.navy.model.incident.IncidentStatus;
 import org.cajun.navy.service.AbstractTestBase;
 import org.cajun.navy.service.IncidentService;
+import org.cajun.navy.service.model.Incident;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class IncidentServiceIT extends AbstractTestBase {
     public void testIncidentById(){
         String incidentId = "incidentId";
         Incident incident = new Incident();
-        incident.setIncidentId(incidentId);
+        incident.setId(incidentId);
         incident.setLat(BigDecimal.valueOf(34.214745));
         incident.setLon(BigDecimal.valueOf(-77.9837161));
         incident.setMedicalNeeded(true);
@@ -37,7 +37,7 @@ public class IncidentServiceIT extends AbstractTestBase {
         service.createIncident(incident);
 
         Incident returning = service.findByIncidentId(incidentId);
-        Assert.assertEquals(incidentId, returning.getIncidentId());
+        Assert.assertEquals(incidentId, returning.getId());
 
     }
 

@@ -10,21 +10,21 @@ import java.util.Objects;
 @SequenceGenerator(name="ResponderSeq", sequenceName="responder_table_sequence", allocationSize = 10)
 @Table(name = "responder_table")
 @NamedQueries({
-        @NamedQuery(name = "Responder.allResponders", query = "SELECT r FROM Responder r"),
-        @NamedQuery(name = "Responder.findByName", query = "SELECT r FROM Responder r WHERE r.name = :name"),
-        @NamedQuery(name = "Responder.availableResponders", query = "SELECT r FROM Responder r WHERE r.available = true and r.enrolled = true"),
-        @NamedQuery(name = "Responder.availableRespondersOrderedByPerson", query = "SELECT r FROM Responder r WHERE r.available = true and r.enrolled = true ORDER BY r.person DESC NULLS LAST, r.id ASC"),
-        @NamedQuery(name = "Responder.persons", query = "SELECT r FROM Responder r where r.person = true"),
-        @NamedQuery(name = "Responder.nonPersons", query = "SELECT r from Responder r where r.person = false"),
-        @NamedQuery(name = "Responder.countEnrolled", query = "SELECT COUNT(r.id) FROM Responder r WHERE r.enrolled = true"),
-        @NamedQuery(name = "Responder.countActive", query = "SELECT COUNT(r.id) FROM Responder r WHERE r.enrolled = true AND r.available = false"),
-        @NamedQuery(name = "Responder.deleteAll", query = "DELETE FROM Responder"),
-        @NamedQuery(name = "Responder.deleteNonPersons", query = "DELETE FROM Responder r where r.person = false"),
-        @NamedQuery(name = "Responder.clearNonPersons", query = "UPDATE Responder r SET r.available = false, r.enrolled = false WHERE r.person = false"),
-        @NamedQuery(name = "Responder.reset", query = "UPDATE Responder r SET r.available = true, r.enrolled = false WHERE r.person = false"),
-        @NamedQuery(name = "Responder.resetPerson", query = "UPDATE Responder r SET r.available = true, r.enrolled = false, latitude = null,  longitude = null WHERE r.person = true")
+        @NamedQuery(name = "Responder.allResponders", query = "SELECT r FROM ResponderEntity r"),
+        @NamedQuery(name = "Responder.findByName", query = "SELECT r FROM ResponderEntity r WHERE r.name = :name"),
+        @NamedQuery(name = "Responder.availableResponders", query = "SELECT r FROM ResponderEntity r WHERE r.available = true and r.enrolled = true"),
+        @NamedQuery(name = "Responder.availableRespondersOrderedByPerson", query = "SELECT r FROM ResponderEntity r WHERE r.available = true and r.enrolled = true ORDER BY r.person DESC NULLS LAST, r.id ASC"),
+        @NamedQuery(name = "Responder.persons", query = "SELECT r FROM ResponderEntity r where r.person = true"),
+        @NamedQuery(name = "Responder.nonPersons", query = "SELECT r from ResponderEntity r where r.person = false"),
+        @NamedQuery(name = "Responder.countEnrolled", query = "SELECT COUNT(r.id) FROM ResponderEntity r WHERE r.enrolled = true"),
+        @NamedQuery(name = "Responder.countActive", query = "SELECT COUNT(r.id) FROM ResponderEntity r WHERE r.enrolled = true AND r.available = false"),
+        @NamedQuery(name = "Responder.deleteAll", query = "DELETE FROM ResponderEntity"),
+        @NamedQuery(name = "Responder.deleteNonPersons", query = "DELETE FROM ResponderEntity r where r.person = false"),
+        @NamedQuery(name = "Responder.clearNonPersons", query = "UPDATE ResponderEntity r SET r.available = false, r.enrolled = false WHERE r.person = false"),
+        @NamedQuery(name = "Responder.reset", query = "UPDATE ResponderEntity r SET r.available = true, r.enrolled = false WHERE r.person = false"),
+        @NamedQuery(name = "Responder.resetPerson", query = "UPDATE ResponderEntity r SET r.available = true, r.enrolled = false, latitude = null,  longitude = null WHERE r.person = true")
 })
-public class Responder {
+public class ResponderEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="ResponderSeq")
@@ -157,7 +157,7 @@ public class Responder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Responder responder = (Responder) o;
+        ResponderEntity responder = (ResponderEntity) o;
 
         if (!(id ==responder.id)) return false;
         if (!Objects.equals(name, responder.name)) return false;
@@ -187,11 +187,21 @@ public class Responder {
 
     public static class Builder {
 
-        private final Responder responder;
+        private final ResponderEntity responder;
+
+        public Builder() {
+            this.responder = new ResponderEntity();
+        }
 
         public Builder(long id) {
-            this.responder = new Responder();
+            this.responder = new ResponderEntity();
             responder.id = id;
+        }
+
+        public Builder(long id, long version) {
+            this.responder = new ResponderEntity();
+            responder.id = id;
+            responder.version = version;
         }
 
         public Builder name(String name) {
@@ -239,7 +249,7 @@ public class Responder {
             return this;
         }
 
-        public Responder build() {
+        public ResponderEntity build() {
             return responder;
         }
 

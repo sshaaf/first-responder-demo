@@ -60,4 +60,8 @@ public class DisasterInfo {
         return shelters[key];
     }
 
+    public InclusionZone[] getInclusionZones(){
+        return inclusionZones;
+    }
+
 }

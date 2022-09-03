@@ -1,15 +1,18 @@
 package org.cajun.navy.service;
 
-import org.cajun.navy.model.responder.Responder;
+import org.cajun.navy.model.responder.ResponderEntity;
 import org.cajun.navy.model.responder.ResponderDao;
 import org.cajun.navy.model.responder.ResponderStats;
+import org.cajun.navy.service.model.Responder;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.math.RoundingMode;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestScoped
 public class ResponderService {
@@ -28,15 +31,37 @@ public class ResponderService {
 
     @Transactional
     public Responder create(Responder responder){
-        return responderDao.create(responder);
+
+        ResponderEntity entity = new ResponderEntity.Builder(responder.getId())
+                .name(responder.getName())
+                .phoneNumber(responder.getPhoneNumber())
+                .latitude(responder.getLatitude())
+                .longitude(responder.getLongitude())
+                .boatCapacity(responder.getBoatCapacity())
+                .medicalKit(responder.isMedicalKit())
+                .available(responder.isAvailable())
+                .enrolled(responder.isEnrolled())
+                .person(responder.isPerson())
+                .build();
+
+        responderDao.create(entity);
+        return fromEntity(entity);
+    }
+
+
+    @Transactional
+    public void createResponders(List<Responder> responders) {
+        List<Responder> createdResponders = responders.stream()
+                .map(this::create)
+                .collect(Collectors.toList());
     }
 
     public Responder findById(long id){
-        return responderDao.findById(id);
+        return fromEntity(responderDao.findById(id));
     }
 
     public Responder findByName(String name){
-        return responderDao.findByName(name);
+        return fromEntity(responderDao.findByName(name));
     }
 
     @Transactional
@@ -46,41 +71,54 @@ public class ResponderService {
 
     @Transactional
     public Responder update(Responder responder){
-        Responder item = responderDao.update(responder);
-        fireEvent(item);
-        return item;
+        ResponderEntity item = responderDao.findById(responder.getId());
+        item.setAvailable(responder.isAvailable());
+        item.setEnrolled(responder.isEnrolled());
+        item.setLatitude(responder.getLatitude());
+        item.setLongitude(responder.getLongitude());
+        item.setMedicalKit(responder.isMedicalKit());
+        item.setBoatCapacity(responder.getBoatCapacity());
+        item.setName(responder.getName());
+        item.setPhoneNumber(responder.getPhoneNumber());
+        item.setPerson(responder.isPerson());
+        responderDao.update(item);
+
+        Responder updatedResponder = fromEntity(item);
+        fireEvent(updatedResponder);
+        return updatedResponder;
     }
 
     public List<Responder> availableResponders(){
-        return responderDao.availableResponders();
+        return responderDao.availableResponders().stream().map(this::fromEntity).collect(Collectors.toList());
     }
 
     public List<Responder> availableResponders(int limit, int offset){
-        return responderDao.availableResponders(limit, offset);
+        return responderDao.availableResponders(limit, offset).stream().map(this::fromEntity).collect(Collectors.toList());
     }
 
     public Responder getFirstAvailableResponder(){
-        return responderDao.availableResponders().get(0);
+        return fromEntity(responderDao.availableResponders().get(0));
     }
 
     public List<Responder> allResponders(){
-        return responderDao.allResponders();
+        return responderDao.allResponders().stream().map(this::fromEntity).collect(Collectors.toList());
     }
 
     public List<Responder> allResponders(int limit, int offset){
-        return responderDao.allResponders(limit, offset);
+        return responderDao.allResponders(limit, offset).stream().map(this::fromEntity).collect(Collectors.toList());
     }
 
     public List<Responder> personResponders(){
-        return responderDao.personResponders();
+        return responderDao.personResponders().stream().map(this::fromEntity).collect(Collectors.toList());
     }
 
     public List<Responder> personResponders(int limit, int offset){
-        return responderDao.personResponders(limit, offset);
+        return responderDao.personResponders(limit, offset).stream().map(this::fromEntity).collect(Collectors.toList());
     }
 
     public List<Responder> nonPersonResponders(){
-        return responderDao.nonPersonResponders();
+        return responderDao.nonPersonResponders()
+                .stream().map(this::fromEntity).collect(Collectors.toList());
     }
 
     @Transactional
@@ -116,4 +154,17 @@ public class ResponderService {
         responderEventEmitter.send(responder);
     }
 
+    private Responder fromEntity(ResponderEntity entity){
+        return new Responder.Builder(entity.getId())
+                .available(entity.isAvailable())
+                .enrolled((entity.isEnrolled()))
+                .boatCapacity(entity.getBoatCapacity())
+                .medicalKit(entity.getMedicalKit())
+                .person(entity.isPerson())
+                .phoneNumber(entity.getPhoneNumber())
+                .latitude(entity.getLatitude())
+                .longitude(entity.getLongitude())
+                .name(entity.getName())
+                .build();
+    }
 }

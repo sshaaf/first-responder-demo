@@ -3,15 +3,16 @@ package org.cajun.navy.service;
 import org.cajun.navy.map.DisasterInfo;
 import org.cajun.navy.map.RoutePlanner;
 import org.cajun.navy.map.Shelter;
-import org.cajun.navy.model.incident.Incident;
+import org.cajun.navy.model.incident.IncidentEntity;
 import org.cajun.navy.model.incident.IncidentStatus;
 import org.cajun.navy.model.mission.*;
-import org.cajun.navy.model.responder.Responder;
+import org.cajun.navy.model.responder.ResponderEntity;
 import org.cajun.navy.model.responder.ResponderDao;
 import org.cajun.navy.service.message.model.ResponderLocationMessage;
 import org.cajun.navy.service.model.Mission;
 
 import org.cajun.navy.service.model.MissionStep;
+import org.cajun.navy.service.model.Responder;
 import org.cajun.navy.service.model.ResponderLocationHistory;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
@@ -99,7 +100,7 @@ public class MissionService {
     }
 
     @Transactional
-    public void create(Incident incident){
+    public void create(IncidentEntity incident){
 
         MissionEntity missionEntity = new MissionEntity();
         missionEntity.setStatus(MissionStatus.CREATED.toString());
@@ -115,6 +116,9 @@ public class MissionService {
         missionEntity.setResponderStartLatitude(responder.getLatitude());
         missionEntity.setResponderStartLongitude(responder.getLongitude());
 
+        // Ensure responder is no longer available
+        responder.setAvailable(false);
+        responderService.update(responder);
 
         // Set destination location
         Shelter shelter = disasterInfo.getRandomShelter();

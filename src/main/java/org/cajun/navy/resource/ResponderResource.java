@@ -1,7 +1,7 @@
 package org.cajun.navy.resource;
 
-import org.cajun.navy.model.responder.Responder;
 import org.cajun.navy.service.ResponderService;
+import org.cajun.navy.service.model.Responder;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -109,6 +109,14 @@ public class ResponderResource {
         public Response createResponder(Responder responder) throws URISyntaxException {
                 Responder created = service.create(responder);
                 return Response.created(new URI("/responder/" + created.getId())).build();
+        }
+
+        @POST
+        @Path("/responders")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public Response createResponders(List<Responder> responders) {
+                service.createResponders(responders);
+                return Response.status(Response.Status.CREATED).build();
         }
 
         @PUT

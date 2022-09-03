@@ -1,8 +1,9 @@
 package org.cajun.navy.service;
 
-import org.cajun.navy.model.incident.Incident;
 import org.cajun.navy.model.incident.IncidentDao;
+import org.cajun.navy.model.incident.IncidentEntity;
 import org.cajun.navy.model.incident.IncidentStatus;
+import org.cajun.navy.service.model.Incident;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
@@ -10,6 +11,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RequestScoped
@@ -31,12 +33,14 @@ public class IncidentService {
 
     @Transactional
     public Incident createIncident(Incident incident) {
-        Incident item = incidentDao.create(incident);
+        IncidentEntity item = incidentDao.create(toIncidentEntity(incident));
         missionService.create(item);
 
+        Incident createdIncident = fromIncidentEntity(item);
+
         // fireEvent to Kafka
-        fireEvent(item);
-        return item;
+        fireEvent(createdIncident);
+        return createdIncident;
     }
 
     // Emit incident
@@ -46,31 +50,68 @@ public class IncidentService {
     }
 
     public void updateStatus(IncidentStatus status, String incidentId){
-        Incident incident = findByIncidentId(incidentId);
+        IncidentEntity incident = incidentDao.findByIncidentId(incidentId);
         incident.setStatus(status.toString());
         incidentDao.merge(incident);
-        fireEvent(incident);
+        fireEvent(fromIncidentEntity(incident));
     }
 
     public List<Incident> findByStatus(String status) {
-        return incidentDao.findByStatus(status);
+        return incidentDao.findByStatus(status).stream().map(
+                this::fromIncidentEntity
+        ).collect(Collectors.toList());
     }
 
     public List<Incident> findAll() {
-        return incidentDao.findAll();
+        return incidentDao.findAll().stream().map(
+                this::fromIncidentEntity
+        ).collect(Collectors.toList());
     }
 
     public List<Incident> findByName(String pattern) {
-        return incidentDao.findByName(pattern);
+        return incidentDao.findByName(pattern).stream().map(
+                this::fromIncidentEntity
+        ).collect(Collectors.toList());
     }
 
     public Incident findByIncidentId(String incidentId) {
-        return incidentDao.findByIncidentId(incidentId);
+        return fromIncidentEntity(incidentDao.findByIncidentId(incidentId));
     }
 
     @Transactional
     public void deleteAllIncidents(){
         incidentDao.deleteAll();
     }
+
+    private Incident fromIncidentEntity(IncidentEntity incidentEntity){
+        return new Incident.Builder(incidentEntity.getIncidentId())
+                .victimName(incidentEntity.getVictimName())
+                .victimPhoneNumber(incidentEntity.getVictimPhoneNumber())
+                .reportedTime(incidentEntity.getReportedTime())
+                .status(incidentEntity.getStatus())
+                .numberOfPeople(incidentEntity.getNumberOfPeople())
+                .medicatNeeded(incidentEntity.isMedicalNeeded())
+                .lat(incidentEntity.getLat())
+                .lon(incidentEntity.getLon())
+                .build();
+    }
+
+    private IncidentEntity toIncidentEntity(Incident incident){
+        if(incident != null) {
+            return new IncidentEntity.Builder(incident.getId())
+                    .victimName(incident.getVictimName())
+                    .victimPhoneNumber(incident.getVictimPhoneNumber())
+                    .reportedTime(incident.getReportedTime())
+                    .status(incident.getStatus())
+                    .numberOfPeople(incident.getNumberOfPeople())
+                    .medicatNeeded(incident.isMedicalNeeded())
+                    .lat(incident.getLat())
+                    .lon(incident.getLon())
+                    .build();
+        }
+        else throw new IllegalArgumentException("Incident was null");
+
+    }
+
 
 }

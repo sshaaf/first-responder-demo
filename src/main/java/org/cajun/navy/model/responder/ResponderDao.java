@@ -3,27 +3,27 @@ package org.cajun.navy.model.responder;
 import java.util.List;
 
 public interface ResponderDao {
-    Responder create(Responder responder);
+    ResponderEntity create(ResponderEntity responder);
 
-    Responder findById(long id);
+    ResponderEntity findById(long id);
 
-    Responder findByName(String name);
+    ResponderEntity findByName(String name);
 
-    Responder update(Responder responder);
+    ResponderEntity update(ResponderEntity responder);
 
-    List<Responder> availableResponders();
+    List<ResponderEntity> availableResponders();
 
-    List<Responder> availableResponders(int limit, int offset);
+    List<ResponderEntity> availableResponders(int limit, int offset);
 
-    List<Responder> allResponders();
+    List<ResponderEntity> allResponders();
 
-    List<Responder> allResponders(int limit, int offset);
+    List<ResponderEntity> allResponders(int limit, int offset);
 
-    List<Responder> personResponders();
+    List<ResponderEntity> personResponders();
 
-    List<Responder> personResponders(int limit, int offset);
+    List<ResponderEntity> personResponders(int limit, int offset);
 
-    List<Responder> nonPersonResponders();
+    List<ResponderEntity> nonPersonResponders();
 
     void reset();
 

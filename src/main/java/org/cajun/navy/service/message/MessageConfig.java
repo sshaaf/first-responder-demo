@@ -17,7 +17,7 @@ public interface MessageConfig {
         SetResponderUnavailableCommand, UpdateResponderCommand;
 
         public static String getEventforStatus(boolean available, boolean enrolled){
-            if(!available && !enrolled)
+            if(!available)
                 return SetResponderUnavailableCommand.name();
             else
                 return UpdateResponderCommand.name();

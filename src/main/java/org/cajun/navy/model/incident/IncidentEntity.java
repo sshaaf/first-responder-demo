@@ -1,6 +1,5 @@
 package org.cajun.navy.model.incident;
 
-import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -10,19 +9,18 @@ import java.time.Instant;
 @SequenceGenerator(name="ReportedIncidentSeq", sequenceName="REPORTED_INCIDENT_SEQ", allocationSize = 10)
 @Table(name = "reported_incident")
 @NamedQueries({
-        @NamedQuery(name = "Incident.findAll", query = "SELECT i from Incident i"),
-        @NamedQuery(name = "Incident.byIncidentId", query = "SELECT i FROM Incident i WHERE i.incidentId = :incidentId"),
-        @NamedQuery(name = "Incident.byStatus", query = "SELECT i from Incident i WHERE i.status = :status"),
-        @NamedQuery(name = "Incident.findByName", query = "SELECT i from Incident i WHERE LOWER(i.victimName) LIKE :pattern"),
-        @NamedQuery(name = "Incident.deleteAll", query = "DELETE FROM Incident")
+        @NamedQuery(name = "Incident.findAll", query = "SELECT i from IncidentEntity i"),
+        @NamedQuery(name = "Incident.byIncidentId", query = "SELECT i FROM IncidentEntity i WHERE i.incidentId = :incidentId"),
+        @NamedQuery(name = "Incident.byStatus", query = "SELECT i from IncidentEntity i WHERE i.status = :status"),
+        @NamedQuery(name = "Incident.findByName", query = "SELECT i from IncidentEntity i WHERE LOWER(i.victimName) LIKE :pattern"),
+        @NamedQuery(name = "Incident.deleteAll", query = "DELETE FROM IncidentEntity")
 })
-public class Incident {
+public class IncidentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="ReportedIncidentSeq")
     private long id;
 
-    @JsonbTransient
     @Column(name = "incident_id")
     private String incidentId;
 
@@ -45,7 +43,6 @@ public class Incident {
     private String victimPhoneNumber;
 
     @Basic
-    @JsonbTransient
     @Column(name = "reported_time")
     private Instant reportedTime;
 
@@ -139,5 +136,60 @@ public class Incident {
     public long getVersion() {
         return version;
     }
+
+
+    public static class Builder{
+
+        private IncidentEntity incidentEntity;
+
+        public Builder(String incidentId){
+            incidentEntity = new IncidentEntity();
+            incidentEntity.incidentId = incidentId;
+        }
+
+        public Builder lat(BigDecimal lat){
+            incidentEntity.lat = lat;
+            return this;
+        }
+
+        public Builder lon(BigDecimal lon){
+            incidentEntity.lon = lon;
+            return this;
+        }
+
+        public Builder numberOfPeople(int numberOfPeople){
+            incidentEntity.numberOfPeople = numberOfPeople;
+            return this;
+        }
+
+        public IncidentEntity.Builder medicatNeeded(boolean medicalNeeded){
+            incidentEntity.medicalNeeded = medicalNeeded;
+            return this;
+        }
+
+        public Builder victimName(String victimName){
+            incidentEntity.victimName = victimName;
+            return this;
+        }
+
+        public Builder victimPhoneNumber(String victimPhoneNumber){
+            incidentEntity.victimPhoneNumber = victimPhoneNumber;
+            return this;
+        }
+
+        public Builder reportedTime(Instant reportedTime){
+            incidentEntity.reportedTime = reportedTime;
+            return this;
+        }
+        public Builder status(String status){
+            incidentEntity.status = status;
+            return this;
+        }
+
+        public IncidentEntity build(){
+            return incidentEntity;
+        }
+    }
+
 
 }

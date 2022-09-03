@@ -1,10 +1,10 @@
 package org.cajun.navy.service.message.model;
 
-import org.cajun.navy.model.responder.Responder;
+import org.cajun.navy.model.responder.ResponderEntity;
 
 public class ResponderSetUnavailableEvent {
 
-    public Responder responder;
+    public ResponderEntity responder;
 
     public String status = "success";
 
@@ -15,7 +15,7 @@ public class ResponderSetUnavailableEvent {
 
         private ResponderSetUnavailableEvent event;
 
-        public Builder(Responder responder){
+        public Builder(ResponderEntity responder){
             event = new ResponderSetUnavailableEvent();
             event.responder = responder;
         }

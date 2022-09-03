@@ -1,7 +1,7 @@
 package org.cajun.navy.resource;
 
-import org.cajun.navy.model.incident.Incident;
 import org.cajun.navy.service.IncidentService;
+import org.cajun.navy.service.model.Incident;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

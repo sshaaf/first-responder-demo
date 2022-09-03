@@ -2,21 +2,22 @@ package org.cajun.navy.service;
 
 import io.smallrye.reactive.messaging.kafka.api.KafkaMetadataUtil;
 import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
-import org.cajun.navy.model.incident.Incident;
 import org.cajun.navy.model.incident.IncidentStatus;
-import org.cajun.navy.model.responder.Responder;
 import org.cajun.navy.service.message.MessageConfig;
 import org.cajun.navy.service.message.model.IncidentCommandMessage;
 import org.cajun.navy.service.message.model.MissionCommandMessage;
 import org.cajun.navy.service.message.model.ResponderLocationMessage;
 import org.cajun.navy.service.message.model.ResponderMessageCommand;
+import org.cajun.navy.service.model.Incident;
 import org.cajun.navy.service.model.Mission;
+import org.cajun.navy.service.model.Responder;
 import org.eclipse.microprofile.reactive.messaging.*;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import javax.enterprise.context.Dependent;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
+import javax.ws.rs.core.MediaType;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
@@ -34,6 +35,7 @@ public class MessageService {
                 .withId(id)
                 .withType(type)
                 .withSource(URI.create(source))
+                .withDataContentType(MediaType.APPLICATION_JSON)
                 .withData(data.getBytes(StandardCharsets.UTF_8))
                 .withTime(OffsetDateTime.from(OffsetDateTime.now().toZonedDateTime()))
                 .build();
@@ -55,12 +57,12 @@ public class MessageService {
     @Outgoing("incident-command-to-kafka")
     public Message<CloudEvent> sendCommandToKafka(Incident incident) {
         // IncidentCommandMessage is not the same as the incident, extract whats required
-        String data = new IncidentCommandMessage.Builder(incident.getIncidentId())
+        String data = new IncidentCommandMessage.Builder(incident.getId())
                 .status(incident.getStatus().toString())
                 .build().toString();
 
         // The returned message will have the metadata added
-        return decorateMessage(incident.getIncidentId(), INCIDENT_UPDATE_COMMAND, INCIDENT_MESSAGE_SOURCE, data);
+        return decorateMessage(incident.getId(), INCIDENT_UPDATE_COMMAND, INCIDENT_MESSAGE_SOURCE, data);
     }
 
     @Incoming("incident-event")
@@ -75,7 +77,7 @@ public class MessageService {
         String data = jsonb.toJson(incident);
 
         // The returned message will have the metadata added
-        return decorateMessage(incident.getIncidentId(), eventType.toString(), INCIDENT_MESSAGE_SOURCE, data);
+        return decorateMessage(incident.getId(), eventType.toString(), INCIDENT_MESSAGE_SOURCE, data);
     }
 
 

@@ -29,7 +29,7 @@ public class DisasterResource {
     @Path("/inclusion-zones")
     @Produces(MediaType.APPLICATION_JSON)
     public Response inclusionZones() {
-        return Response.status(Response.Status.ACCEPTED).entity(disasterInfo.getShelters()).build();
+        return Response.status(Response.Status.ACCEPTED).entity(disasterInfo.getInclusionZones()).build();
     }
 
     @GET
