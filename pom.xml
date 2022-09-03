@@ -456,11 +456,9 @@
                                         db = new org.testcontainers.containers.PostgreSQLContainer("postgres:latest")
                                                 .withDatabaseName("${frdemo.dbname}")
                                                 .withUsername("${frdemo.dbuser}")
-                                                .withPass
-                                        word("${frdemo.dbpass}")
+                                                .withPassword("${frdemo.dbpass}")
                                         db.start()
                                         project.properties.setProperty('jdbc.url', db.getJdbcUrl())
-                                        println ("\n\n\n\n\njdbc.url = " + db.getJdbcUrl())
                                     </source>
                                 </configuration>
                             </execution>
@@ -513,7 +511,7 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>foo</id>
+                                <id>create-datasource</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>execute-commands</goal>
