@@ -43,6 +43,7 @@
         <frdemo.dbname>frdemo</frdemo.dbname>
         <frdemo.dbuser>${frdemo.dbname}</frdemo.dbuser>
         <frdemo.dbpass>${frdemo.dbname}</frdemo.dbpass>
+        <version.postgresql>42.5.0</version.postgresql>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -249,6 +250,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${version.postgresql}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>junit</groupId>
@@ -372,6 +380,20 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.10.1</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-deps</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <profiles>
@@ -426,6 +448,7 @@
                                                 .withPassword("${frdemo.dbpass}")
                                         db.start()
                                         project.properties.setProperty('jdbc.url', db.getJdbcUrl())
+                                        println ("\n\n\n\n\njdbc.url = " + db.getJdbcUrl())
                                     </source>
                                 </configuration>
                             </execution>
@@ -474,12 +497,30 @@
                                         <layer>jaxrs-server</layer>
                                         <layer>microprofile-reactive-messaging</layer>
                                         <layer>microprofile-reactive-messaging-kafka</layer>
-                                        <layer>postgresql-datasource</layer>
                                     </layers>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>foo</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>execute-commands</goal>
+                                </goals>
+                                <configuration>
+                                    <batch>true</batch>
+                                    <fail-on-error>true</fail-on-error>
+                                    <offline>true</offline>
+                                    <commands>
+                                        <command>embed-server --admin-only=true</command>
+                                        <command>module add --name=org.postgres --resources=${project.build.directory}/dependency/postgresql-${version.postgresql}.jar --dependencies=javax.api,javax.transaction.api</command>
+                                        <command>/subsystem=datasources/jdbc-driver=postgres:add(driver-name="postgres",driver-module-name="org.postgres",driver-class-name=org.postgresql.Driver)</command>
+                                        <command>data-source add --jndi-name=java:/FRDemoDS --name=FRDemoDS --connection-url=${jdbc.url} --driver-name=postgres --user-name=frdemo --password=frdemo</command>
+                                    </commands>
                                 </configuration>
                             </execution>
                         </executions>
                         <configuration>
+                            <jboss-home>${project.basedir}/target/wildfly-${version.wildfly}</jboss-home>
                             <provisioning-dir>${project.basedir}/target/wildfly-${version.wildfly}</provisioning-dir>
                         </configuration>
                     </plugin>
