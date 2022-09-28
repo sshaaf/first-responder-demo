@@ -19,6 +19,7 @@ public class IncidentServiceIT extends AbstractTestBase {
     public void foo() {
         List<Incident> incidents = service.findAll();
         Assert.assertNotNull(incidents);
+        incidents.forEach(System.out::println);
     }
 
     @Test
@@ -37,8 +38,8 @@ public class IncidentServiceIT extends AbstractTestBase {
         service.createIncident(incident);
 
         Incident returning = service.findByIncidentId(incidentId);
+        Assert.assertNotNull(returning);
         Assert.assertEquals(incidentId, returning.getId());
-
     }
 
 }

@@ -31,6 +31,7 @@
                 -Dorg.wildfly.datasources.postgresql.database=frdemo
                 -Dorg.wildfly.datasources.postgresql.user-name=frdemo
                 -Dorg.wildfly.datasources.postgresql.password=frdemo
+                -Dmapbox.access.token=${mapbox.access.token}
             </property>
             <property name="allowConnectingToRunningServer">true</property>
         </configuration>

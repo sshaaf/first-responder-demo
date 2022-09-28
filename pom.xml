@@ -397,8 +397,26 @@
                 <version>3.3.0</version>
                 <executions>
                     <execution>
-                        <id>copy-deps</id>
+                        <id>copy</id>
                         <phase>process-classes</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.postgresql</groupId>
+                                    <artifactId>postgresql</artifactId>
+                                    <version>${version.postgresql}</version>
+                                    <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                            <!-- other configurations here -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-deps</id>
+                        <phase>none</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
@@ -462,7 +480,6 @@
                                     </source>
                                 </configuration>
                             </execution>
-
                         </executions>
                         <dependencies>
                             <dependency>
@@ -551,6 +568,7 @@
                                         <jboss.home>${project.basedir}/target/wildfly-${version.wildfly}</jboss.home>
                                         <org.wildfly.datasources.postgresql.connection-url>${jdbc.url}</org.wildfly.datasources.postgresql.connection-url>
                                         <kafka.server>${kafka.server}</kafka.server>
+                                        <mapbox.access.token>${env.MAPBOX_TOKEN}</mapbox.access.token>
                                     </systemPropertyVariables>
                                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
                                 </configuration>

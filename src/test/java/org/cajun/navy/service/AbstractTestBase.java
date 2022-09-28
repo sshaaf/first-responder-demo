@@ -38,25 +38,25 @@ public abstract class AbstractTestBase {
 
     private static final String WEBAPP_SRC = "src/main/webapp";
 
-    private static WebArchive webArchive;
-
     @Deployment
     public static Archive getDeployment() throws IOException {
-        if (webArchive == null) {
-            PomEquippedResolveStage pom = Maven.resolver().loadPomFromFile("pom.xml")
-                    .importDependencies(ScopeType.RUNTIME);
-            String config = Files.readString(Path.of("src/main/resources/META-INF/microprofile-config.properties"));
-            config = config.replaceAll("localhost:9092", "" + System.getProperty("kafka.server"));
+        PomEquippedResolveStage pom = Maven.resolver().loadPomFromFile("pom.xml")
+                .importDependencies(ScopeType.RUNTIME);
+        String config = Files.readString(Path.of("src/main/resources/META-INF/microprofile-config.properties"));
+        config = config.replaceAll("localhost:9092", "" + System.getProperty("kafka.server"));
 
-            webArchive = ShrinkWrap.create(WebArchive.class, "test.war")
-                    .addAsWebInfResource(new File(WEBAPP_SRC, "WEB-INF/beans.xml"))
-                    .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
-                    .addAsResource(new StringAsset(config), "META-INF/microprofile-config.properties")
-                    .addAsLibraries(pom.resolve("com.mapbox.mapboxsdk:mapbox-sdk-services").withTransitivity().asList(JavaArchive.class))
-                    .addAsResource("import.sql")
-                    .addPackages(true, "org.cajun.navy")
-            ;
-        }
+        Archive webArchive = ShrinkWrap.create(WebArchive.class, "test.war")
+                .addAsWebInfResource(new File(WEBAPP_SRC, "WEB-INF/beans.xml"))
+                .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
+                .addAsResource(new StringAsset(config), "META-INF/microprofile-config.properties")
+                .addAsLibraries(pom.importRuntimeAndTestDependencies().resolve().withTransitivity().asList(JavaArchive.class))
+                .addAsLibraries(pom.resolve("com.mapbox.mapboxsdk:mapbox-sdk-services").withTransitivity().asList(JavaArchive.class))
+                .addAsLibraries(pom.resolve("io.cloudevents:cloudevents-kafka").withTransitivity().asList(JavaArchive.class))
+                .addAsWebInfResource(new File(WEBAPP_SRC, "WEB-INF/beans.xml"))
+                .addAsResource("import.sql", "META-INF/import.sql")
+                .addAsResource("wilmington.json")
+                .addPackages(true, "org.cajun.navy");
+
 
         return webArchive;
     }
