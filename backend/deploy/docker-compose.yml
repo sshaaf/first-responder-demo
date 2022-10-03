@@ -1,0 +1,44 @@
+version: "2"
+services:
+
+  kafka:
+    image: confluentinc/cp-kafka:7.2.1
+    command: [
+      "sh", "-c",
+      "bin/kafka-server-start.sh config/server.properties --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} "
+    ]
+    ports:
+      - "9092:9092"
+    environment:
+      LOG_DIR: "/tmp/logs"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=frdemo
+      - POSTGRES_PASSWORD=frdemo
+      - POSTGRES_DB=frdemo
+    ports:
+      - '5432:5432'
+#    volumes:
+#      - db:/var/lib/postgresql/data
+
+  wildfly:
+#    image: quay.io/wildfly/wildfly:26.1.1.Final-2
+    image: localhost/first_responder_demo:latest
+    ports:
+      - '8080:8080'
+    environment:
+      - KAFKA_SERVER=kafka:9092
+    depends_on:
+      - db
+      - kafka
+
+volumes:
+  db:
+    driver: local
+  kafka:
+    driver: local

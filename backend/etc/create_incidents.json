@@ -1,0 +1,8 @@
+{
+  "latitude":30.12345,
+  "longitude":-70.98765,
+  "medicalNeeded":true,
+  "numberOfPeople":3,
+  "victimName":"John Doe",
+  "victimPhoneNumber":"(123) 456-7890)"
+}

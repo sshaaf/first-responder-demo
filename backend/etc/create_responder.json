@@ -1,0 +1,11 @@
+{
+  "available":true,
+  "boatCapacity":3,
+  "enrolled":false,
+  "latitude":30.12345,
+  "longitude":-70.98765,
+  "medicalKit":true,
+  "name":"John Doe",
+  "person":true,
+  "phoneNumber":"111-222-333"
+}
