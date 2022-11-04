@@ -5,11 +5,13 @@
 #  https://catalog.redhat.com/software/containers/ubi8/nodejs-12/5d3fff015a13461f5fb8635a?container-tabs=overview&gti-tabs=registry-tokens
 
 
-FROM registry.redhat.io/ubi8/nodejs-12:1-45
+FROM node:12
 
-WORKDIR /usr/src/emergency-console
+WORKDIR /usr/src/console
 
 COPY . ./
+
+COPY package*.json ./
 
 RUN npm install
 RUN npm run-script build

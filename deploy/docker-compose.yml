@@ -1,0 +1,89 @@
+version: "2"
+services:
+
+  db:
+    image: postgres:14.1-alpine
+    container_name: frdemo-db
+    restart: always
+    environment:
+      - POSTGRES_USER=frdemo
+      - POSTGRES_PASSWORD=frdemo
+      - POSTGRES_DB=frdemo
+    ports:
+      - '5432:5432'
+  #    volumes:
+  #      - db:/var/lib/postgresql/data
+
+  zookeeper:
+    image: quay.io/strimzi/kafka:0.31.1-kafka-3.2.3
+    command: [
+      "sh", "-c",
+      "bin/zookeeper-server-start.sh config/zookeeper.properties"
+    ]
+    ports:
+      - "2181:2181"
+    environment:
+      LOG_DIR: /tmp/logs
+
+  kafka:
+    image: quay.io/strimzi/kafka:0.31.1-kafka-3.2.3
+    command: [
+      "sh", "-c",
+      "bin/kafka-server-start.sh config/server.properties --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT}"
+    ]
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      LOG_DIR: "/tmp/logs"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+  wildfly:
+#    image: quay.io/wildfly/wildfly:26.1.1.Final-2
+    image: quay.io/frdemo/backend:latest
+    container_name: frdemo-wildfly
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+    environment:
+      KAFKA_SERVER: kafka:9092
+      MAPBOX_TOKEN: ${MAPBOX_TOKEN}
+    depends_on:
+      - db
+      - kafka
+
+  console:
+    image: quay.io/frdemo/console:latest
+    container_name: frdemo-console
+    ports:
+      - "4200:4200"
+    restart: on-failure
+    environment:
+      PORT: 4200
+      INCIDENT: "http://wildfly:8080"
+      ALERT: "http://wildfly:8080"
+      RESPONDER: "http://wildfly:8080/responder-service"
+      MISSION: "http://wildfly:8080"
+      PRIORITY: "http://wildfly:8080/incident-priority-service"
+      DISASTER: "http://wildfly:8080/disaster-service"
+      DISASTER_SIMULATOR: "http://wildfly:8080/frdemo-backend"
+      PROCESS_VIEWER: "http://wildfly:8080/frdemo-backend"
+      AUTH_URL: "https://sso/auth"
+      KEYCLOAK: "false"
+      POLLING: "10000"
+      REALM: "emergency-realm"
+      CLIENTID: "js"
+      KAFKA_HOST: "kafka:9092"
+      TOKEN: ${MAPBOX_TOKEN}
+    depends_on:
+      - kafka
+      - wildfly
+
+volumes:
+  db:
+    driver: local
+  kafka:
+    driver: local

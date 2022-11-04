@@ -1,6 +1,6 @@
-APP_NAME = emergency-console
+APP_NAME = console
 SERVER = quay.io
-ORG = emergencyresponsedemo
+ORG = frdemo
 RELEASE_TAG ?= $(CIRCLE_TAG)
 CONTAINER_LATEST_TAG = ${SERVER}/${ORG}/$(APP_NAME):latest
 CONTAINER_MASTER_TAG = ${SERVER}/${ORG}/$(APP_NAME):master

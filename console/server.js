@@ -19,16 +19,16 @@ app.use(cors());
 
 // these ENV variables are only set for local development. Default to services on Openshift
 app.set('port', process.env.PORT || 8080);
-app.set('incident-service', process.env.INCIDENT || 'http://localhost:8080/first-responder-demo');
-app.set('disaster-service', process.env.DISASTER || 'http://localhost:8080/first-responder-demo');
-app.set('alert-service', process.env.ALERT || 'http://localhost:8080/first-responder-demo');
-app.set('responder-service', process.env.RESPONDER || 'http://localhost:8080/first-responder-demo');
-app.set('mission-service', process.env.MISSION || 'http://localhost:8080/first-responder-demo');
-app.set('incident-priority-service', process.env.PRIORITY || 'http://localhost:8080/first-responder-demo');
-app.set('process-viewer', process.env.PROCESS_VIEWER || 'http://localhost:8080/first-responder-demo');
-app.set('responder-simulator', process.env.RESPONDER_SIMULATOR || 'http://localhost:8080/first-responder-demo');
-app.set('disaster-simulator', process.env.DISASTER_SIMULATOR || 'http://localhost:8080/first-responder-demo');
-app.set('disaster-simulator-route', process.env.DISASTER_SIMULATOR_ROUTE || 'http://localhost:8080/first-responder-demo');
+app.set('incident-service', process.env.INCIDENT || 'http://localhost:8080');
+app.set('disaster-service', process.env.DISASTER || 'http://localhost:8080/disaster-service');
+app.set('alert-service', process.env.ALERT || 'http://localhost:8080');
+app.set('responder-service', process.env.RESPONDER || 'http://localhost:8080/responder-service');
+app.set('mission-service', process.env.MISSION || 'http://localhost:8080');
+app.set('incident-priority-service', process.env.PRIORITY || 'http://localhost:8080');
+app.set('process-viewer', process.env.PROCESS_VIEWER || 'http://localhost:8080');
+app.set('responder-simulator', process.env.RESPONDER_SIMULATOR || 'http://localhost:8080');
+app.set('disaster-simulator', process.env.DISASTER_SIMULATOR || 'http://localhost:8080');
+app.set('disaster-simulator-route', process.env.DISASTER_SIMULATOR_ROUTE || 'http://localhost:8080');
 app.set('kafka-host', process.env.KAFKA_HOST.split(','));
 app.set('kafka-message-topic', ['topic-mission-event', 'topic-responder-location-update', 'topic-incident-event', 'topic-responder-event', 'topic-incident-command', 'topic-responder-command']);
 if (process.env.KAFKA_TOPIC) {
