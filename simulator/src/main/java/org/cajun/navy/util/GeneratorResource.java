@@ -28,7 +28,8 @@ public class GeneratorResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Incident> incidents(@PathParam("number") int numOfIncidents) {
         Disaster d = new Disaster();
-        return d.generateIncidents(numOfIncidents);
+        List<Incident> list = d.generateIncidents(numOfIncidents);
+        return list;
 
     }
 

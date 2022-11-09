@@ -1,11 +1,13 @@
 package org.cajun.navy.util;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+@ApplicationScoped
 public class Disaster {
 
     private static GenerateFullNames fullNames = null;

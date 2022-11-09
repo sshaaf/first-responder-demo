@@ -14,6 +14,42 @@ public class Responder {
     private boolean available = true;
     private boolean person = false;
 
+    public BigDecimal getLatitude() {
+        return latitude;
+    }
+
+    public BigDecimal getLongitude() {
+        return longitude;
+    }
+
+    public boolean isEnrolled() {
+        return enrolled;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public int getBoatCapacity() {
+        return boatCapacity;
+    }
+
+    public boolean isMedicalKit() {
+        return medicalKit;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public boolean isPerson() {
+        return person;
+    }
+
     public static class Builder {
 
         private final Responder responder;

@@ -11,6 +11,31 @@ public class Incident {
     private String victimName = null;
     private String victimPhoneNumber = null;
 
+
+    public BigDecimal getLat() {
+        return lat;
+    }
+
+    public BigDecimal getLon() {
+        return lon;
+    }
+
+    public int getNumberOfPeople() {
+        return numberOfPeople;
+    }
+
+    public boolean isMedicalNeeded() {
+        return isMedicalNeeded;
+    }
+
+    public String getVictimName() {
+        return victimName;
+    }
+
+    public String getVictimPhoneNumber() {
+        return victimPhoneNumber;
+    }
+
     public static class Builder{
 
         private Incident incident;
