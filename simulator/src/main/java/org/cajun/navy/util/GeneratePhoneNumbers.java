@@ -1,4 +1,4 @@
-package com.redhat.cajun.navy.datagenerate;
+package org.cajun.navy.util;
 
 import java.text.DecimalFormat;
 import java.util.Random;

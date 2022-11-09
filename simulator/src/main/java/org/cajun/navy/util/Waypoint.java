@@ -1,9 +1,9 @@
-package com.redhat.cajun.navy.datagenerate;
+package org.cajun.navy.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class Waypoint implements com.redhat.cajun.navy.datagenerateinterface.Waypoint {
+public class Waypoint {
 
 	private double latitude = 0.0;
 	private double longitude = 0.0;

@@ -1,4 +1,4 @@
-package com.redhat.cajun.navy.datagenerate;
+package org.cajun.navy.util;
 
 import java.awt.geom.PathIterator;
 
@@ -283,22 +283,6 @@ public class BoundingPolygon extends java.awt.geom.Path2D.Double {
 		this.points = points;
 		
 		init();
-	}
-	
-	public static void main(String args[])
-	{
-		BoundingPolygon boundingPolygon = new BoundingPolygon();
-		
-		//Methods to make it easy to see the varioius bounding boxes that can be cut and pasted into
-		//http://www.copypastemap.com/map.php
-		//boundingPolygon.setThreePointsArea();
-		//boundingPolygon.setThreePointsLine();
-		//boundingPolygon.setxcross();
-		//boundingPolygon.setsquare();
-		//boundingPolygon.setsTwoSquares();
-		//boundingPolygon.setsTwoSquaresWithOneInternalSquare();
-		
-		System.err.println(boundingPolygon);
 	}
 
 }

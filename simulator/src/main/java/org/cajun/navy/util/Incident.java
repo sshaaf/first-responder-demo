@@ -1,75 +1,57 @@
 package org.cajun.navy.util;
 
-import io.vertx.core.json.Json;
+import java.math.BigDecimal;
 
-public class Victim {
+public class Incident {
 
-    private double lat = 0.0f;
-    private double lon = 0.0f;
+    private BigDecimal lat;
+    private BigDecimal lon;
     private int numberOfPeople = 0;
     private boolean isMedicalNeeded = false;
     private String victimName = null;
     private String victimPhoneNumber = null;
 
+    public static class Builder{
 
+        private Incident incident;
 
-    public double getLat() {
-        return lat;
+        public Builder(){
+            incident = new Incident();
+        }
+
+        public Builder lat(double lat){
+            incident.lat = BigDecimal.valueOf(lat);
+            return this;
+        }
+
+        public Builder lon(double lon){
+            incident.lon = BigDecimal.valueOf(lon);
+            return this;
+        }
+
+        public Builder numberOfPeople(int numberOfPeople){
+            incident.numberOfPeople = numberOfPeople;
+            return this;
+        }
+
+        public Builder medicalNeeded(boolean medicalNeeded){
+            incident.isMedicalNeeded = medicalNeeded;
+            return this;
+        }
+
+        public Builder victimName(String victimName){
+            incident.victimName = victimName;
+            return this;
+        }
+
+        public Builder victimPhoneNumber(String victimPhoneNumber){
+            incident.victimPhoneNumber = victimPhoneNumber;
+            return this;
+        }
+
+        public Incident build(){
+            return incident;
+        }
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public double getLon() {
-        return lon;
-    }
-
-    public void setLon(double lon) {
-        this.lon = lon;
-    }
-
-    public void setLatLon(double lat, double lon){
-        setLat(lat);
-        setLon(lon);
-    }
-
-
-    public int getNumberOfPeople() {
-        return numberOfPeople;
-    }
-
-    public void setNumberOfPeople(int numberOfPeople) {
-        this.numberOfPeople = numberOfPeople;
-    }
-
-    public boolean isMedicalNeeded() {
-        return isMedicalNeeded;
-    }
-
-    public void setMedicalNeeded(boolean medicalNeeded) {
-        isMedicalNeeded = medicalNeeded;
-    }
-
-    public String getVictimName() {
-        return victimName;
-    }
-
-    public void setVictimName(String victimName) {
-        this.victimName = victimName;
-    }
-
-    public String getVictimPhoneNumber() {
-        return victimPhoneNumber;
-    }
-
-    public void setVictimPhoneNumber(String victimPhoneNumber) {
-        this.victimPhoneNumber = victimPhoneNumber;
-    }
-
-
-    @Override
-    public String toString() {
-        return Json.encode(this);
-    }
 }

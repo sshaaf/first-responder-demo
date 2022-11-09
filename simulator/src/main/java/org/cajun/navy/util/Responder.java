@@ -1,94 +1,76 @@
 package org.cajun.navy.util;
 
+import java.math.BigDecimal;
+
 public class Responder {
 
-    private Double latitude;
-
-    private Double longitude;
-
-    private Boolean enrolled;
-
+    private BigDecimal latitude;
+    private BigDecimal longitude;
+    private boolean enrolled;
     private String name;
-
     private String phoneNumber;
+    private int boatCapacity;
+    private boolean medicalKit;
+    private boolean available = true;
+    private boolean person = false;
 
-    private Integer boatCapacity;
+    public static class Builder {
 
-    private Boolean medicalKit;
+        private final Responder responder;
 
-    private Boolean available = true;
+        public Builder() {
+            this.responder = new Responder();
+        }
 
-    private Boolean person = false;
+        public Builder name(String name) {
+            responder.name = name;
+            return this;
+        }
 
-    public String getName() {
-        return name;
+        public Builder phoneNumber(String phoneNumber) {
+            responder.phoneNumber = phoneNumber;
+            return this;
+        }
+
+        public Builder latitude(double latitude) {
+            responder.latitude = BigDecimal.valueOf(latitude);
+            return this;
+        }
+
+        public Builder longitude(double longitude) {
+            responder.longitude = BigDecimal.valueOf(longitude);
+            return this;
+        }
+
+        public Builder boatCapacity(Integer boatCapacity) {
+            responder.boatCapacity = boatCapacity;
+            return this;
+        }
+
+        public Builder medicalKit(Boolean medicalKit) {
+            responder.medicalKit = medicalKit;
+            return this;
+        }
+
+        public Builder available(Boolean available) {
+            responder.available = available;
+            return this;
+        }
+
+        public Builder person(Boolean person) {
+            responder.person = person;
+            return this;
+        }
+
+        public Builder enrolled(Boolean enrolled) {
+            responder.enrolled = enrolled;
+            return this;
+        }
+
+        public Responder build() {
+            return responder;
+        }
+
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Integer getBoatCapacity() {
-        return boatCapacity;
-    }
-
-    public void setBoatCapacity(Integer boatCapacity) {
-        this.boatCapacity = boatCapacity;
-    }
-
-    public Boolean getMedicalKit() {
-        return medicalKit;
-    }
-
-    public void setMedicalKit(Boolean medicalKit) {
-        this.medicalKit = medicalKit;
-    }
-
-    public Boolean getAvailable() {
-        return available;
-    }
-
-    public void setAvailable(Boolean available) {
-        this.available = available;
-    }
-
-    public Boolean getPerson() {
-        return person;
-    }
-
-    public void setPerson(Boolean person) {
-        this.person = person;
-    }
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    public Boolean getEnrolled() {
-        return enrolled;
-    }
-
-    public void setEnrolled(Boolean enrolled) {
-        this.enrolled = enrolled;
-    }
 }

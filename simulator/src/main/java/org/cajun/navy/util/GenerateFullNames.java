@@ -1,11 +1,14 @@
-package com.redhat.cajun.navy.datagenerate;
+package org.cajun.navy.util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 
 public class GenerateFullNames {
@@ -23,18 +26,21 @@ public class GenerateFullNames {
     public Map<Integer, String> getMapFromFile(String fileName) {
         Map<Integer, String> temp = new HashMap<>();
         int count = 0;
-        try {
-            try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-                for (String line; (line = br.readLine()) != null; ) {
-                    temp.put(count, line);
-                    count++;
-                }
+
+        try (InputStream inputStream = getClass().getResourceAsStream(fileName);
+             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            for (String line; (line = br.readLine()) != null; ) {
+                temp.put(count, line);
+                count++;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         return temp;
     }
+
+
 
     public String getNextLastName() {
         return lNames.get(new Random().nextInt(lNames.size()));

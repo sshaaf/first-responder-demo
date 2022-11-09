@@ -1,68 +1,68 @@
-package com.redhat.cajun.navy.datagenerate;
+package org.cajun.navy.util;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-
 public class Disaster {
-    private static final Logger log = LoggerFactory.getLogger(Disaster.class);
 
     private static GenerateFullNames fullNames = null;
-    public BoundingPolygons boundingPolygons = new BoundingPolygons();
+    private static GenerateRandomPoints points = null;
 
 
-    public Disaster(String fNameFile, String lNameFile){
+    private String fNameFile= "/FNames.txt";
+    private String lNameFile= "/LNames.txt";
+
+
+    public Disaster(){
         fullNames = new GenerateFullNames(fNameFile,lNameFile);
+        points = new GenerateRandomPoints();
     }
 
 
-    public Victim generateVictim(){
-        Victim v = new Victim();
-        v.setVictimName(fullNames.getNextFullName());
+    public Incident generateSingleIncident(){
+        Point2D.Double point = points.getInternalPoint();
+        return new Incident.Builder().
+        victimName(fullNames.getNextFullName())
+                .lat(point.getY())
+                .lon(point.getX())
+                .victimPhoneNumber(GeneratePhoneNumbers.getNextPhoneNumber())
+                .numberOfPeople(biasedRandom(1, 10, 1.3))
+                .medicalNeeded(new Random().nextBoolean())
+                .build();
 
-        Waypoint point = boundingPolygons.getInternalWaypoint();
-        v.setLatLon(point.getY(),point.getX());
-
-        v.setVictimPhoneNumber(GeneratePhoneNumbers.getNextPhoneNumber());
-        v.setNumberOfPeople(biasedRandom(1, 10, 1.3));
-        v.setMedicalNeeded(new Random().nextBoolean());
-
-        return v;
     }
 
     public List<Responder> generateResponders(int number) {
-        List<Responder> responders = new ArrayList<>();
-        for(int i=0; i<number; i++){
+        List<Responder> responders = new ArrayList<>(number);
+        for(int i=0; i<number; i++)
             responders.add(generateResponder());
-        }
         return responders;
     }
 
     public Responder generateResponder() {
-        Responder responder = new Responder();
-        Waypoint point = boundingPolygons.getInternalWaypoint();
-        responder.setName(fullNames.getNextFullName());
-        responder.setPhoneNumber(GeneratePhoneNumbers.getNextPhoneNumber());
-        responder.setBoatCapacity(biasedRandom(1, 12, 0.5));
-        responder.setMedicalKit(new Random().nextBoolean());
-        responder.setLatitude(point.getY());
-        responder.setLongitude(point.getX());
-        responder.setEnrolled(true);
-        responder.setPerson(false);
-        responder.setAvailable(true);
-        return responder;
+        Point2D.Double point = points.getInternalPoint();
+        return new Responder.Builder()
+                .name(fullNames.getNextFullName())
+                .phoneNumber(GeneratePhoneNumbers.getNextPhoneNumber())
+                .boatCapacity(biasedRandom(1, 12, 0.5))
+                .medicalKit(new Random().nextBoolean())
+                .latitude(point.getY())
+                .longitude(point.getX())
+                .enrolled(true)
+                .person(false)
+                .available(true)
+                .build();
     }
 
 
-    public List<Victim> generateVictims(int number){
-        List<Victim> victims = new ArrayList<Victim>();
+    public List<Incident> generateIncidents(int number){
+        List<Incident> incidents = new ArrayList<Incident>(number);
         for(int i=0; i<number; i++)
-            victims.add(generateVictim());
-        return victims;
+            incidents.add(generateSingleIncident());
+        return incidents;
     }
 
     protected int biasedRandom(int min, int max, double bias) {
