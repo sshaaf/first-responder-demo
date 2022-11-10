@@ -1,5 +1,6 @@
 package org.cajun.navy.service;
 
+import org.cajun.navy.exception.NoResponderAvailableException;
 import org.cajun.navy.model.responder.ResponderEntity;
 import org.cajun.navy.model.responder.ResponderDao;
 import org.cajun.navy.model.responder.ResponderStats;
@@ -10,7 +11,6 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,8 +96,10 @@ public class ResponderService {
         return responderDao.availableResponders(limit, offset).stream().map(this::fromEntity).collect(Collectors.toList());
     }
 
-    public Responder getFirstAvailableResponder(){
-        return fromEntity(responderDao.availableResponders().get(0));
+    public Responder getFirstAvailableResponder() throws NoResponderAvailableException {
+        if(!responderDao.availableResponders().isEmpty())
+            return fromEntity(responderDao.availableResponders().get(0));
+        else throw new NoResponderAvailableException();
     }
 
     public List<Responder> allResponders(){

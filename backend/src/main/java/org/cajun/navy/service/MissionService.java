@@ -1,5 +1,6 @@
 package org.cajun.navy.service;
 
+import org.cajun.navy.exception.NoResponderAvailableException;
 import org.cajun.navy.map.DisasterInfo;
 import org.cajun.navy.map.RoutePlanner;
 import org.cajun.navy.map.Shelter;
@@ -100,7 +101,7 @@ public class MissionService {
     }
 
     @Transactional
-    public void create(IncidentEntity incident){
+    public void create(IncidentEntity incident) throws NoResponderAvailableException {
 
         MissionEntity missionEntity = new MissionEntity();
         missionEntity.setStatus(MissionStatus.CREATED.toString());

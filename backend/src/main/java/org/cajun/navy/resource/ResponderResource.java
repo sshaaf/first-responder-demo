@@ -83,7 +83,10 @@ public class ResponderResource {
                 } else {
                         responders = service.allResponders();
                 }
-                return Response.ok(responders).build();
+                if(!responders.isEmpty())
+                        return Response.ok(responders).build();
+                else
+                        return Response.ok(Response.Status.NO_CONTENT).build();
         }
 
         @GET
@@ -107,6 +110,9 @@ public class ResponderResource {
         @Path("/responder")
         @Consumes(MediaType.APPLICATION_JSON)
         public Response createResponder(Responder responder) throws URISyntaxException {
+                // Since in this demo we do not have human interaction, marking the following default values
+                responder.setEnrolled(true);
+                responder.setPerson(false);
                 Responder created = service.create(responder);
                 return Response.created(new URI("/responder/" + created.getId())).build();
         }

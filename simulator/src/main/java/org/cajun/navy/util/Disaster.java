@@ -1,5 +1,8 @@
 package org.cajun.navy.util;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
 import javax.enterprise.context.ApplicationScoped;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -13,7 +16,11 @@ public class Disaster {
     private static GenerateFullNames fullNames = null;
     private static GenerateRandomPoints points = null;
 
+    @ConfigProperty(name = "sendRestToBackend")
+    boolean send;
 
+    @RestClient
+    BackendService backendService;
     private String fNameFile= "/FNames.txt";
     private String lNameFile= "/LNames.txt";
 
@@ -26,7 +33,7 @@ public class Disaster {
 
     public Incident generateSingleIncident(){
         Point2D.Double point = points.getInternalPoint();
-        return new Incident.Builder().
+        Incident incident = new Incident.Builder().
         victimName(fullNames.getNextFullName())
                 .lat(point.getY())
                 .lon(point.getX())
@@ -34,6 +41,10 @@ public class Disaster {
                 .numberOfPeople(biasedRandom(1, 10, 1.3))
                 .medicalNeeded(new Random().nextBoolean())
                 .build();
+
+        backendService.createIncident(incident);
+
+        return incident;
 
     }
 
@@ -60,7 +71,7 @@ public class Disaster {
     }
 
 
-    public List<Incident> generateIncidents(int number){
+    public List<Incident> generateIncidents(int number, boolean send){
         List<Incident> incidents = new ArrayList<Incident>(number);
         for(int i=0; i<number; i++)
             incidents.add(generateSingleIncident());

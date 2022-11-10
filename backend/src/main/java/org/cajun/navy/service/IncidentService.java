@@ -1,5 +1,6 @@
 package org.cajun.navy.service;
 
+import org.cajun.navy.exception.NoResponderAvailableException;
 import org.cajun.navy.model.incident.IncidentDao;
 import org.cajun.navy.model.incident.IncidentEntity;
 import org.cajun.navy.model.incident.IncidentStatus;
@@ -32,7 +33,7 @@ public class IncidentService {
     Emitter<Incident> incidentCommandEmitter;
 
     @Transactional
-    public Incident createIncident(Incident incident) {
+    public Incident createIncident(Incident incident) throws NoResponderAvailableException {
         IncidentEntity item = incidentDao.create(toIncidentEntity(incident));
         missionService.create(item);
 

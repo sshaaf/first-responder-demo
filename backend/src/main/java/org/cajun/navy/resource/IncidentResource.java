@@ -1,6 +1,8 @@
 package org.cajun.navy.resource;
 
+import org.cajun.navy.exception.NoResponderAvailableException;
 import org.cajun.navy.service.IncidentService;
+import org.cajun.navy.service.MissionService;
 import org.cajun.navy.service.model.Incident;
 
 import javax.enterprise.context.RequestScoped;
@@ -9,10 +11,13 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.logging.Logger;
 
 @Path("/incidents")
 @RequestScoped
 public class IncidentResource {
+
+    private static final Logger logger = Logger.getLogger(IncidentResource.class.getName());
 
     @Inject
     IncidentService service;
@@ -29,7 +34,12 @@ public class IncidentResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createIncident(@Valid Incident incident) {
-        return Response.status(Response.Status.CREATED).entity(service.createIncident(incident)).build();
+        try {
+            return Response.status(Response.Status.CREATED).entity(service.createIncident(incident)).build();
+        } catch (NoResponderAvailableException ae){
+            logger.info("No responders were found");
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
     }
 
     @GET

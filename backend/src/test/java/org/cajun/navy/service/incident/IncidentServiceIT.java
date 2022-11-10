@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import javax.inject.Inject;
 
+import org.cajun.navy.exception.NoResponderAvailableException;
 import org.cajun.navy.model.incident.IncidentStatus;
 import org.cajun.navy.service.AbstractTestBase;
 import org.cajun.navy.service.IncidentService;
@@ -23,7 +24,7 @@ public class IncidentServiceIT extends AbstractTestBase {
     }
 
     @Test
-    public void testIncidentById(){
+    public void testIncidentById() throws NoResponderAvailableException {
         String incidentId = "incidentId";
         Incident incident = new Incident();
         incident.setId(incidentId);
