@@ -20,6 +20,9 @@ public class GenerateFullNames {
 
 
     public GenerateFullNames(String fNameFile, String lNameFile) {
+
+        // Read the values from file and add them into a static Map.
+        // Idea is to not read the file everytime.
         fNames = Collections.unmodifiableMap(getMapFromFile(fNameFile));
         lNames = Collections.unmodifiableMap(getMapFromFile(lNameFile));
     }

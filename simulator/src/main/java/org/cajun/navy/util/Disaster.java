@@ -16,9 +16,12 @@ public class Disaster {
     private static GenerateFullNames fullNames = null;
     private static GenerateRandomPoints points = null;
 
+    // Set this in app.props to true if you are hitting the actual incidents/responders end points.
+    // False would only show the data and not hit the end point.
     @ConfigProperty(name = "sendRestToBackend")
     boolean send;
 
+    // RestClient for the backend
     @RestClient
     BackendService backendService;
     private String fNameFile= "/FNames.txt";
@@ -42,6 +45,7 @@ public class Disaster {
                 .medicalNeeded(new Random().nextBoolean())
                 .build();
 
+        if(send)
         backendService.createIncident(incident);
 
         return incident;

@@ -18,5 +18,10 @@ public interface BackendService {
     @Produces(MediaType.APPLICATION_JSON)
     Response createIncident(Incident incident);
 
+    @POST
+    @Path("/responder-service/responder")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response createResponder(Responder responder);
 
 }
