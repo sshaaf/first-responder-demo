@@ -82,6 +82,19 @@ services:
       - kafka
       - wildfly
 
+  simulator:
+    #    image: quay.io/wildfly/wildfly:26.1.1.Final-2
+    image: quay.io/frdemo/simulator:latest
+    container_name: frdemo-simulator
+    ports:
+      - "8888:8888"
+    environment:
+      BACKEND_URL: "http://wildfly:8080"
+      SIM_SEND: "true"
+    depends_on:
+      - wildfly
+
+
 volumes:
   db:
     driver: local

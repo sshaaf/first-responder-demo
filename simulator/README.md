@@ -1,4 +1,4 @@
-# simulator Project
+X# simulator Project
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
@@ -19,7 +19,12 @@ You can run your application in dev mode that enables live coding using:
 The application can be packaged using:
 
 ```shell script
-./mvnw package
+./mvnw package -Dquarkus.native.container-build=true
+```
+
+To push the image into quay.io via maven 
+```shell script
+./mvnw package -Dquarkus.native.container-build=true
 ```
 
 It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
