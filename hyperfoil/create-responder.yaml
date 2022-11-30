@@ -1,0 +1,41 @@
+# This is the name of the benchmark. It's recommended to keep this in sync with
+# name of this file, adding extension `.hf.yaml`.
+name: single-request
+# We must define at least one HTTP target, in this case it becomes a default
+# for all HTTP requests.
+http:
+  host: https://192.168.0.19:4200
+# Simulation consists of phases - potentially independent workloads.
+# We'll discuss phases more in detail in next quickstarts.
+phases:
+# `create` is the name of the single phase in this benchmark.
+- create:
+    # `atOnce` with `users: 1` results in running the scenario below just once
+    atOnce:
+      users: 1
+      scenario:
+      # The only sequence in this scenario is called `new`.
+      - new:
+        - httpRequest:
+            POST: /responder-service/responder
+            headers:
+              content-type: application/json
+              accept: application/json
+              user-agent: Hyperfoil
+              # Here we specify a multi-line string. For more info about multiline strings,
+              # compacting/chopping of newlines etc. please check out https://yaml-multiline.info/
+              body: |
+                {
+                "available":true,
+                "boatCapacity":3,
+                "enrolled":false,
+                "latitude":34.12345,
+                "longitude":-77.98765,
+                "medicalKit":true,
+                "name":"John Doe",
+                "person":true,
+                "phoneNumber":"111-222-333"
+                }
+            # Inject helpers to make this request synchronous, i.e. keep
+            # the sequence blocked until Hyperfoil processes the response.
+            sync: true
