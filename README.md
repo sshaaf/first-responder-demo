@@ -57,3 +57,47 @@ To run the tests, execute this command:
 ```
 mvn clean compile verify -Parq-managed 
 ```
+
+
+### Running the app
+
+A MapBox token is required to make the map components work. It should be exported, i.e.
+
+export MAPBOX_TOKEN="...."
+
+The app can now be started by running the Docker Compose script.
+
+The dashboard can be found at: https://localhost:4200/home/dashboard
+
+#### Creating Responders
+
+To create a responder, POST some JSON like this:
+
+{
+"available":true,
+"boatCapacity":3,
+"enrolled":false,
+"latitude":34.12345,
+"longitude":-77.98765,
+"medicalKit":true,
+"name":"John Doe",
+"person":true,
+"phoneNumber":"111-222-333"
+}
+
+to the endpoint https://localhost:4200/responder-service/responder
+
+#### Running the simulator
+
+??? What does the simulator do?
+
+$ export BACKEND_URL="http://localhost:8080"
+$ cd simulator/
+$ mvn quarkus:dev
+
+#### Creating Incidents
+
+To generate an incident:
+curl http://localhost:8888/incidents/1
+
+Note that nothing will show on the front end until there's an incident
