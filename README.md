@@ -87,6 +87,15 @@ To create a responder, POST some JSON like this:
 
 to the endpoint https://localhost:4200/responder-service/responder
 
+E.g.
+
+ 
+curl -i -H 'Content-Type: application/json' \ 
+        -H 'Accept: application/json' \ 
+        -k -d @responder.json https://localhost:4200/responder-service/responder
+
+if the content is placed in responder.json
+
 #### Running the simulator
 
 ??? What does the simulator do?
