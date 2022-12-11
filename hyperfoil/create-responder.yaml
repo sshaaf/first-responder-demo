@@ -1,6 +1,7 @@
 name: create-responder
 http:
   host: https://192.168.0.19:4200
+  sharedConnections: 3
 phases:
 # `create` is the name of the single phase in this benchmark.
 - create:
@@ -8,7 +9,6 @@ phases:
     atOnce:
       users: 1
       scenario:
-      # The only sequence in this scenario is called `new`.
       - new:
         - httpRequest:
             POST: /responder-service/responder
@@ -16,8 +16,6 @@ phases:
               content-type: application/json
               accept: application/json
               user-agent: Hyperfoil
-              # Here we specify a multi-line string. For more info about multiline strings,
-              # compacting/chopping of newlines etc. please check out https://yaml-multiline.info/
             body: |
               {
               "available":true,
@@ -30,6 +28,29 @@ phases:
               "person":true,
               "phoneNumber":"111-222-333"
               }
-            # Inject helpers to make this request synchronous, i.e. keep
-            # the sequence blocked until Hyperfoil processes the response.
+            handler:
+              status:
+                range: 2xx
+            sync: true
+        - httpRequest:
+            POST: /responder-service/responder
+            headers:
+              content-type: application/json
+              accept: application/json
+              user-agent: Hyperfoil
+            body: |
+              {
+              "available":true,
+              "boatCapacity":5,
+              "enrolled":false,
+              "latitude":34.12345,
+              "longitude":-77.98765,
+              "medicalKit":false,
+              "name":"Jane Doe",
+              "person":true,
+              "phoneNumber":"444-555-666"
+              }
+            handler:
+              status:
+                range: 2xx
             sync: true
