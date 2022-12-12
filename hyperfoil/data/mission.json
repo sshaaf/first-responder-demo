@@ -1,0 +1,24 @@
+[
+  {
+    "destinationLat": 34.2461,
+    "destinationLong": -77.9519,
+    "id": "c89b48fe-d39a-496f-be3c-04e4aeaeb6f9",
+    "incidentId": "f30f43ce-a22c-4433-a90a-de67de38bf2d",
+    "incidentLat": 34.21475,
+    "incidentLong": -77.98372,
+    "responderId": "12",
+    "responderLocationHistory": [
+      { "lat": 30.12, "lon": -70.99, "timestamp": 1668087205024 },
+      { "lat": 34.21, "lon": -77.98, "timestamp": 1668087210020 },
+      { "lat": 34.25, "lon": -77.95, "timestamp": 1668087215012 }
+    ],
+    "responderStartLat": 30.12345,
+    "responderStartLong": -70.98765,
+    "status": "COMPLETED",
+    "steps": [
+      { "destination": false, "lat": 30.12, "lon": -70.99, "wayPoint": false },
+      { "destination": false, "lat": 34.21, "lon": -77.98, "wayPoint": false },
+      { "destination": false, "lat": 34.25, "lon": -77.95, "wayPoint": true }
+    ]
+  }
+]
