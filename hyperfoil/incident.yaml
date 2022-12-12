@@ -1,6 +1,6 @@
 name: incident
 http:
-  host: http://192.168.0.19:8888
+  host: !concat [ "http://", !param SERVER localhost, ":8888" ]
   sharedConnections: 3
 phases:
 # `create` is the name of the single phase in this benchmark.

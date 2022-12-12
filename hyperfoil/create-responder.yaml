@@ -1,6 +1,6 @@
 name: create-responder
 http:
-  host: https://192.168.0.19:4200
+  host: !concat [ "https://", !param SERVER localhost, ":4200" ]
   sharedConnections: 3
 phases:
 # `create` is the name of the single phase in this benchmark.

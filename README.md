@@ -88,7 +88,6 @@ To create a responder, POST some JSON like this:
 to the endpoint https://localhost:4200/responder-service/responder
 
 E.g.
-
  
 curl -i -H 'Content-Type: application/json' \ 
         -H 'Accept: application/json' \ 
@@ -96,10 +95,13 @@ curl -i -H 'Content-Type: application/json' \
 
 if the content is placed in responder.json
 
+This curl command can also be used as a smoke test to check that the system is starting correctly before running the Hyperfoil tests.
+
 #### Running the simulator
 
-??? What does the simulator do?
+The simulator is a batch update tool that randomly generates data into the system if its REST endpoint is hit. 
 
+$ export SIM_SEND=true
 $ export BACKEND_URL="http://localhost:8080"
 $ cd simulator/
 $ mvn quarkus:dev
@@ -110,3 +112,15 @@ To generate an incident:
 curl http://localhost:8888/incidents/1
 
 Note that nothing will show on the front end until there's an incident
+
+### Running Hyperfoil tests
+
+/bin/cli.sh
+
+[] start-local
+[] upload <PATH>
+[] run <SCRIPT>
+
+The scripts are templated - see https://hyperfoil.io/userguide/templates.html for details.
+The key variable is SERVER, which default to localhost - and can be changed to allow for test scenarios
+where load generation is separate from the SUT.
