@@ -1,0 +1,21 @@
+name: simple-mission
+http:
+  host: !concat [ "http://", !param SERVER localhost, ":8888" ]
+  sharedConnections: 3
+phases:
+- poll:
+    # `atOnce` with `users: 1` results in running the scenario below just once
+    atOnce:
+      users: 1
+      scenario:
+      - new:
+        - httpRequest:
+            GET: /frdemo-backend/api/missons
+            headers:
+              content-type: application/json
+              accept: application/json
+              user-agent: Hyperfoil
+            handler:
+              status:
+                range: 2xx
+            sync: true

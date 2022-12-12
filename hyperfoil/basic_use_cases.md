@@ -15,14 +15,14 @@ Test overhead of OTel by comparing relative performance of system with and witho
 
 Static Responders & Static Incidents - created 1-off at start
 Fixed number of regular users doing:
-1. Querying missions (every 2 secs)
 
-http://localhost:8080/frdemo-backend/api/missons
+1. Querying missions (every 2 secs)
 
 ### Scenario 2 - Handling Responder IDs
 
 Static Responders & Static Incidents - created 1-off at start
 Fixed number of regular users doing:
+
 1. Querying missions (every 2 secs)
 2. Querying responder locations (need responder IDs)
 
