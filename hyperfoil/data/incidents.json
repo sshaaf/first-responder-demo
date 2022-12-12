@@ -1,0 +1,82 @@
+[
+  {
+    "lat": 34.20027235235817,
+    "lon": -77.85868390807542,
+    "numberOfPeople": 8,
+    "victimName": "Chuck Anderson",
+    "victimPhoneNumber": "(704) 555-0875",
+    "medicalNeeded": true
+  },
+  {
+    "lat": 34.190421232531726,
+    "lon": -77.87120392994674,
+    "numberOfPeople": 6,
+    "victimName": "Aubrey Tyrrell",
+    "victimPhoneNumber": "(984) 555-9039",
+    "medicalNeeded": false
+  },
+  {
+    "lat": 34.229111217900055,
+    "lon": -77.84793156181071,
+    "numberOfPeople": 5,
+    "victimName": "Emilia Mosher",
+    "victimPhoneNumber": "(828) 555-8930",
+    "medicalNeeded": false
+  },
+  {
+    "lat": 34.180906401472114,
+    "lon": -77.85723535724539,
+    "numberOfPeople": 3,
+    "victimName": "Luke Bailey",
+    "victimPhoneNumber": "(252) 555-0990",
+    "medicalNeeded": true
+  },
+  {
+    "lat": 34.245962877483635,
+    "lon": -77.92827947650994,
+    "numberOfPeople": 2,
+    "victimName": "Noah Perry",
+    "victimPhoneNumber": "(252) 555-5606",
+    "medicalNeeded": false
+  },
+  {
+    "lat": 34.180305494887534,
+    "lon": -77.93146186153652,
+    "numberOfPeople": 1,
+    "victimName": "Eli Henderson",
+    "victimPhoneNumber": "(704) 555-0678",
+    "medicalNeeded": false
+  },
+  {
+    "lat": 34.25418769032928,
+    "lon": -77.91947171676556,
+    "numberOfPeople": 7,
+    "victimName": "Isabelle Jarae",
+    "victimPhoneNumber": "(859) 555-9942",
+    "medicalNeeded": false
+  },
+  {
+    "lat": 34.231006434044154,
+    "lon": -77.9335876230561,
+    "numberOfPeople": 10,
+    "victimName": "Alexa Adams",
+    "victimPhoneNumber": "(651) 555-2889",
+    "medicalNeeded": true
+  },
+  {
+    "lat": 34.252069116489736,
+    "lon": -77.93981477273965,
+    "numberOfPeople": 5,
+    "victimName": "Autumn Bell",
+    "victimPhoneNumber": "(704) 555-2996",
+    "medicalNeeded": true
+  },
+  {
+    "lat": 34.214636619615455,
+    "lon": -77.85264718838707,
+    "numberOfPeople": 1,
+    "victimName": "Hunter Barnes",
+    "victimPhoneNumber": "(336) 555-9280",
+    "medicalNeeded": true
+  }
+]

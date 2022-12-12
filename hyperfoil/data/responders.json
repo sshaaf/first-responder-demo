@@ -1,0 +1,112 @@
+[
+  {
+    "latitude": 34.25196082039438,
+    "longitude": -77.93060450785941,
+    "enrolled": true,
+    "name": "Jackson Echevarria",
+    "phoneNumber": "(336) 555-9573",
+    "boatCapacity": 9,
+    "medicalKit": true,
+    "available": true,
+    "person": false
+  },
+  {
+    "latitude": 34.057613175197325,
+    "longitude": -77.9199133513007,
+    "enrolled": true,
+    "name": "Owen Morgan",
+    "phoneNumber": "(704) 555-1222",
+    "boatCapacity": 6,
+    "medicalKit": true,
+    "available": true,
+    "person": false
+  },
+  {
+    "latitude": 34.25179458669471,
+    "longitude": -77.90121320900579,
+    "enrolled": true,
+    "name": "Piper Campbell",
+    "phoneNumber": "(984) 555-1605",
+    "boatCapacity": 7,
+    "medicalKit": true,
+    "available": true,
+    "person": false
+  },
+  {
+    "latitude": 34.21482633192797,
+    "longitude": -77.94942122086172,
+    "enrolled": true,
+    "name": "Chuck Barnes",
+    "phoneNumber": "(651) 555-0305",
+    "boatCapacity": 11,
+    "medicalKit": false,
+    "available": true,
+    "person": false
+  },
+  {
+    "latitude": 34.13452062839927,
+    "longitude": -77.91479115021403,
+    "enrolled": true,
+    "name": "Dylan Smith",
+    "phoneNumber": "(828) 555-3772",
+    "boatCapacity": 8,
+    "medicalKit": false,
+    "available": true,
+    "person": false
+  },
+  {
+    "latitude": 34.25879533510603,
+    "longitude": -77.84835832658317,
+    "enrolled": true,
+    "name": "Skylar Brown",
+    "phoneNumber": "(252) 555-1012",
+    "boatCapacity": 12,
+    "medicalKit": true,
+    "available": true,
+    "person": false
+  },
+  {
+    "latitude": 34.14648816147363,
+    "longitude": -77.90060550771365,
+    "enrolled": true,
+    "name": "James Peterson",
+    "phoneNumber": "(828) 555-1154",
+    "boatCapacity": 10,
+    "medicalKit": true,
+    "available": true,
+    "person": false
+  },
+  {
+    "latitude": 34.20946642924323,
+    "longitude": -77.9641538174857,
+    "enrolled": true,
+    "name": "Nathan Evans",
+    "phoneNumber": "(252) 555-8128",
+    "boatCapacity": 7,
+    "medicalKit": false,
+    "available": true,
+    "person": false
+  },
+  {
+    "latitude": 34.217669407142935,
+    "longitude": -77.90218035613597,
+    "enrolled": true,
+    "name": "Jonathan Hayes",
+    "phoneNumber": "(984) 555-1373",
+    "boatCapacity": 8,
+    "medicalKit": false,
+    "available": true,
+    "person": false
+  },
+  {
+    "latitude": 34.15903061883338,
+    "longitude": -77.89698224560922,
+    "enrolled": true,
+    "name": "Christian Tyrrell",
+    "phoneNumber": "(704) 555-7191",
+    "boatCapacity": 6,
+    "medicalKit": false,
+    "available": true,
+    "person": false
+  }
+]
