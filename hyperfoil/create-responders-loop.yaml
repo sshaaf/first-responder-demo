@@ -1,8 +1,8 @@
-name: fetch-n-execute
+name: create-responders-loop
 http:
   - host: !concat [ "http://", !param SERVER localhost, ":8888" ]
     sharedConnections: 3
-  - host: !concat [ "https://", !param SERVER localhost, ":8080" ]
+  - host: !concat [ "http://", !param SERVER localhost, ":8080" ]
     sharedConnections: 3
 phases:
   # `create` is the name of the single phase in this benchmark.
@@ -15,7 +15,7 @@ phases:
             - createResponders:
               - httpRequest:
                   GET: /responders/10
-                  authority: !concat [ "http://", !param SERVER localhost, ":8888" ]
+                  endpoint: !concat [ "http://", !param SERVER localhost, ":8888" ]
                   headers:
                     content-type: application/json
                     accept: application/json
@@ -53,7 +53,7 @@ phases:
             - sendResponders[1]:
               - httpRequest:
                   POST: /responder-service/responders
-                  authority: !concat [ "https://", !param SERVER localhost, ":8080" ]
+                  endpoint: !concat [ "http://", !param SERVER localhost, ":8080" ]
                   body:
                     fromVar: responders[.]
                   # The sync shortcut actually sets up a bit in the session state
