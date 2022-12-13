@@ -1,7 +1,9 @@
 name: fetch-n-execute
 http:
-  host: !concat [ "http://", !param SERVER localhost, ":8888" ]
-  sharedConnections: 3
+  - host: !concat [ "http://", !param SERVER localhost, ":8888" ]
+    sharedConnections: 3
+  - host: !concat [ "https://", !param SERVER localhost, ":8080" ]
+    sharedConnections: 3
 phases:
   # `create` is the name of the single phase in this benchmark.
   - create:
@@ -9,53 +11,54 @@ phases:
       atOnce:
         users: 1
         scenario:
-          - createResponders:
-            - httpRequest:
-                GET:  /incidents/10
-                headers:
-                  content-type: application/json
-                  accept: application/json
-                  user-agent: Hyperfoil
-                sync: false
-                metric: responders
-                handler:
+          initialSequences:
+            - createResponders:
+              - httpRequest:
+                  GET: /responders/10
+                  authority: !concat [ "http://", !param SERVER localhost, ":8888" ]
+                  headers:
+                    content-type: application/json
+                    accept: application/json
+                    user-agent: Hyperfoil
+                  sync: false
+                  metric: responders
+                  handler:
+                    body:
+                      # Parse the returned JSON that is an array and for each
+                      # element fire the processor.
+                      json:
+                        query: .responders[]
+                        toArray: responders[1]
+                        processor:
+                          # Store each element in a collection `movies`
+                          array:
+                            toVar: responders
+                            # Every data structure in session has maximum size.
+                            # This space is pre-allocated.
+                            maxSize: 1
+              # This step waits until responses for all sent requests are received and processed.
+              - awaitAllResponses
+              #            # Wait 3 seconds to simulate user-interaction
+              #            - thinkTime:
+              #                duration: 3s
+              #            # For each element in variable `responders` schedule one (new) instance
+              #            # of sequence `responders`, defined below. These instances differ in
+              #            # one intrinsic "variable" - their index.
+              - foreach:
+                  fromVar: responders
+                  sequence: sendResponders
+          sequences:
+            # Sequences that can run multiple instances concurrently must declare the maximum
+            # concurrency level explicitly using the brackets.
+            - sendResponders[1]:
+              - httpRequest:
+                  POST: /responder-service/responders
+                  authority: !concat [ "https://", !param SERVER localhost, ":8080" ]
                   body:
-                    # Parse the returned JSON that is an array and for each
-                    # element fire the processor.
-                    json:
-                      query: .responders[]
-                      toArray: responders[10]
-                      processor:
-                        # Store each element in a collection `movies`
-                        array:
-                          toVar: responders
-                          # Every data structure in session has maximum size.
-                          # This space is pre-allocated.
-                          maxSize: 10
-            # This step waits until responses for all sent requests are received and processed.
-            - awaitAllResponses
-#            # Wait 3 seconds to simulate user-interaction
-            - thinkTime:
-                duration: 3s
-#            # For each element in variable `responders` schedule one (new) instance
-#            # of sequence `responders`, defined below. These instances differ in
-#            # one intrinsic "variable" - their index.
-            - foreach:
-                fromVar: responders
-                sequence: sendOver
-    sequences:
-      # Sequences that can run multiple instances concurrently must declare the maximum
-      # concurrency level explicitly using the brackets.
-      - sendOver[10]:
-          - httpRequest:
-              # URLs with spaces and other characters don't work well;
-              # let's encode it (e.g. space -> %20)
-              POST: https://localhost:8080/responder-service/responders
-              body:
-                fromVar: responders[.]
-              # The sync shortcut actually sets up a bit in the session state
-              # cleared before the request and set when the request is complete,
-              # automatically waiting it after this step.
-              # You can write your own handlers (using sequence-scoped vars)
-              # to change this behaviour.
-              sync: true
+                    fromVar: responders[.]
+                  # The sync shortcut actually sets up a bit in the session state
+                  # cleared before the request and set when the request is complete,
+                  # automatically waiting it after this step.
+                  # You can write your own handlers (using sequence-scoped vars)
+                  # to change this behaviour.
+                  sync: true

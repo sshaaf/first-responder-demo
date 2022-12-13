@@ -27,4 +27,4 @@ Fixed number of regular users doing:
 2. Querying responder locations (need responder IDs)
 
 http://localhost:8080/frdemo-backend/responders/{id}
-
+Missions - check for "status": "COMPLETED"
