@@ -1,0 +1,36 @@
+name: create-responders
+http:
+  - name: httpSimulator
+    host: !concat [ "http://", !param SERVER localhost, ":8888" ]
+    sharedConnections: 3
+  - name: httpBackend
+    host: !concat [ "http://", !param SERVER localhost, ":8080" ]
+    sharedConnections: 3
+duration: 10s
+usersPerSec: 10
+scenario:
+  - fetchResponder:
+      - httpRequest:
+          GET: /responders/1
+          endpoint: httpSimulator
+          headers:
+            content-type: application/json
+            accept: application/json
+            user-agent: Hyperfoil
+          sync: false
+          metric: get-responder-data
+          handler:
+            body:
+              json:
+                query: .responders[]
+                toArray: responders[1]
+      - httpRequest:
+          POST: /responder-service/responders
+          endpoint: httpBackend
+          headers:
+            content-type: application/json
+            accept: application/json
+            user-agent: Hyperfoil
+          metric: post-responder
+          body: responders
+
