@@ -4,6 +4,62 @@ The First Responder Demo application is meant to act as a test application for g
 typical WildFly/EAP workload. The application is still in early stages, so more details on the performance tests -- the results, how
 to run them locally, etc -- will be added soon.
 
+
+
+## Emergency Response - Web Console
+
+The web interface for the emergency response demo, built using Angular 7 and node v12.22.12
+
+### Overview
+
+The web console has three main tabs.
+
+### Dashboard
+
+The dashboard tab shows an overview of the status of all incidents and
+responders along with a map view of all ongoing missions. These values update
+in real-time based on events in Kafka.
+
+![dashboard](console/docs/screenshots/dashboard.png)
+
+### Incidents
+
+The incidents tab is a table of all incidents that have been created and their
+information. It has a search bar that will perform searches based on all
+information about the incident.
+
+![incidents](console/docs/screenshots/incident.png)
+
+
+### Mission
+
+The mission tab allows the user to make themselves an available responder in
+the emergency response system. To do this, select a location on the provided
+map to set your current location and select `Available`. The user will then be
+assigned a mission. Once the user reaches the waypoint of the victim, select
+the `Picked up` button to drop off the victim. Once a mission has been
+completed the user will be set to an unavailable state again.
+[NOTE: Backend for this tab is not yet implemented]
+
+![mission](console/docs/screenshots/mission.png)
+
+
+
+## Running the demo with docker-compose
+
+``` 
+# your token from mapbox.com 
+export MAPBOX_TOKEN="...."
+
+# Start the setup with docker compose
+docker-compose -f docker-compose.yml up
+``` 
+
+If all is in order you should be able to see the dashboard on the following url: `https://localhost:4200/home/dashboard`
+
+
+## Manual Setup on a host machine
+With the manual setup there is quiet alot of things that need to be considered in the configuration. The recommended way is to use docker-compose. However we have documented all that is required to run this locally as well. 
 ### Setting up WildFly
 To download and install WildFly, copy and paste the following into your shell:
 ``` 
@@ -45,31 +101,7 @@ $ bin/kafka-console-consumer.sh --topic IncidentReportedEvent --from-beginning -
 $ mvn clean install wildfly:deploy
 ```
 
-### Arquillian tests
-
-The First Responder Demo has a number of basic integration tests using [Arquillian](https://arquillian.org/). The tests and coverage
-are not exhaustive, but are meant to be a quick check of the application's basic functionality. To make running these tests as simple
-as possible, PostgreSQL and Kafka are managed in Docker containers via the [testcontainers](https://testcontainers.org) project, so
-a [working Docker/Podman environment will be required](https://www.testcontainers.org/supported_docker_environment/).
-
-To run the tests, execute this command:
-
-```
-mvn clean compile verify -Parq-managed 
-```
-
-
-### Running the app
-
-A MapBox token is required to make the map components work. It should be exported, i.e.
-
-export MAPBOX_TOKEN="...."
-
-The app can now be started by running the Docker Compose script.
-
-The dashboard can be found at: https://localhost:4200/home/dashboard
-
-#### Creating Responders
+### Creating Responders
 
 To create a responder, POST some JSON like this:
 
@@ -97,7 +129,7 @@ if the content is placed in responder.json
 
 This curl command can also be used as a smoke test to check that the system is starting correctly before running the Hyperfoil tests.
 
-#### Running the simulator
+### Running the simulator
 
 The simulator is a batch update tool that randomly generates data into the system if its REST endpoint is hit. 
 
@@ -113,7 +145,12 @@ curl http://localhost:8888/incidents/1
 
 Note that nothing will show on the front end until there's an incident
 
-### Running Hyperfoil tests
+
+### Outgoing Kafka Messages
+All the Outgoing message formats are documented here backend/etc/OutgoingMessages.md
+
+
+## Running Hyperfoil tests
 
 /bin/cli.sh
 
